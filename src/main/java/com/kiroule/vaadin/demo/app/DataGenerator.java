@@ -62,12 +62,12 @@ public class DataGenerator implements HasLogger {
 			getLogger().info("Generating demo data");
 			getLogger().info("... generating users");
 			createUsers(userRepository, passwordEncoder);
-			getLogger().info("... generating products");
-			createProducts(productRepository);
-			getLogger().info("... generating pickup locations");
-			createPickupLocations(pickupLocationRepository);
-			getLogger().info("... generating orders");
-			createOrders(orderRepository);
+//			getLogger().info("... generating products");
+//			createProducts(productRepository);
+//			getLogger().info("... generating pickup locations");
+//			createPickupLocations(pickupLocationRepository);
+//			getLogger().info("... generating orders");
+//			createOrders(orderRepository);
 
 			getLogger().info("Generated demo data");
 		};
@@ -317,11 +317,11 @@ public class DataGenerator implements HasLogger {
 	}
 
 	private void createUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-		baker = userRepository.save(new User("baker@vaadin.com", "Heidi", passwordEncoder.encode("baker"), Role.BAKER));
-		User user = new User("barista@vaadin.com", "Malin", passwordEncoder.encode("barista"), Role.BARISTA);
+		baker = userRepository.save(new User("baker@vaadin.com", "Heidi", passwordEncoder.encode("baker"), Role.BAKER,9881409240L));
+		User user = new User("barista@vaadin.com", "Malin", passwordEncoder.encode("barista"), Role.BARISTA,9881409240L);
 		user.setLocked(true);
 		barista = userRepository.save(user);
-		user = new User("admin@vaadin.com", "Göran", passwordEncoder.encode("admin"), Role.ADMIN);
+		user = new User("admin@vaadin.com", "Göran", passwordEncoder.encode("admin"), Role.ADMIN,9881409240L);
 		user.setLocked(true);
 		userRepository.save(user);
 	}

@@ -7,8 +7,10 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Entity
+@Entity(name = "user_info")
 public class User extends AbstractEntity {
+
+    
 
 	@NotNull
 	@Size(min = 1, max = 255)
@@ -26,6 +28,9 @@ public class User extends AbstractEntity {
 	@NotNull
 	@Size(min = 1, max = 255)
 	private String role;
+        
+        @NotNull	
+	private long phone;
 
 	private boolean locked = false;
 
@@ -33,7 +38,7 @@ public class User extends AbstractEntity {
 		// An empty constructor is needed for all beans
 	}
 
-	public User(String email, String name, String password, String role) {
+	public User(String email, String name, String password, String role, long phone) {
 		Objects.requireNonNull(email);
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(password);
@@ -43,6 +48,7 @@ public class User extends AbstractEntity {
 		this.name = name;
 		this.password = password;
 		this.role = role;
+                this.phone = phone;
 	}
 
 	public String getPassword() {
@@ -84,4 +90,18 @@ public class User extends AbstractEntity {
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 	}
+        
+        /**
+     * @return the phone
+     */
+    public long getPhone() {
+        return phone;
+    }
+
+    /**
+     * @param phone the phone to set
+     */
+    public void setPhone(long phone) {
+        this.phone = phone;
+    }
 }

@@ -187,10 +187,10 @@
       <artifactId>vaadin-spring-addon-eventbus</artifactId>
       <version>${org.vaadin.spring.version}</version>
     </dependency>
-    <dependency>
+<!--    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -220,6 +220,16 @@
       <artifactId>connectoridgenerator-addon</artifactId>
       <version>0.1.0</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>5.1.44</version>
+</dependency>
+
+
+
+
   </dependencies>
   <repositories>
     <repository>

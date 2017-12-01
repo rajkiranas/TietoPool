@@ -17,6 +17,7 @@ import com.kiroule.vaadin.demo.ui.navigation.NavigationManager;
 import com.kiroule.vaadin.demo.ui.view.admin.product.ProductAdminView;
 import com.kiroule.vaadin.demo.ui.view.admin.user.UserAdminView;
 import com.kiroule.vaadin.demo.ui.view.dashboard.DashboardView;
+import com.kiroule.vaadin.demo.ui.view.myview.MyDashboardView;
 import com.kiroule.vaadin.demo.ui.view.storefront.StorefrontView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.UI;
@@ -49,6 +50,7 @@ public class MainView extends MainViewDesign implements ViewDisplay {
 		attachNavigation(dashboard, DashboardView.class);
 		attachNavigation(users, UserAdminView.class);
 		attachNavigation(products, ProductAdminView.class);
+                attachNavigation(new Button("Dash"), MyDashboardView.class);
 
 		logout.addClickListener(e -> logout());
 	}
