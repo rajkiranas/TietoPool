@@ -78,13 +78,13 @@ public class OrderHistory extends OrderHistoryDesign {
 		this.order = order;
 		newCommentInput.setValue("");
 		items.removeAllComponents();
-		order.getHistory().forEach(historyItem -> {
-			Label l = new Label(formatMessage(historyItem));
-			l.addStyleName(ValoTheme.LABEL_SMALL);
-			l.setCaption(formatTimestamp(historyItem) + " by " + historyItem.getCreatedBy().getName());
-			l.setWidth("100%");
-			items.addComponent(l);
-		});
+//		order.getHistory().forEach(historyItem -> {
+//			Label l = new Label(formatMessage(historyItem));
+//			l.addStyleName(ValoTheme.LABEL_SMALL);
+//			l.setCaption(formatTimestamp(historyItem) + " by " + historyItem.getCreatedBy().getName());
+//			l.setWidth("100%");
+//			items.addComponent(l);
+//		});
 	}
 
 	private String formatTimestamp(HistoryItem historyItem) {

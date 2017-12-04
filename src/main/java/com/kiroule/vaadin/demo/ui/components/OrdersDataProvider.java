@@ -32,7 +32,7 @@ public class OrdersDataProvider extends FilterablePageableDataProvider<Order, Ob
 
 	@Override
 	protected Page<Order> fetchFromBackEnd(Query<Order, Object> query, Pageable pageable) {
-		return orderService.findAnyMatchingAfterDueDate(getOptionalFilter(), getOptionalFilterDate(), pageable);
+		return orderService.findAnyMatchingAfterValidTo(getOptionalFilter(), getOptionalFilterDate(), pageable);
 	}
 
 	private Optional<LocalDate> getOptionalFilterDate() {
@@ -53,14 +53,15 @@ public class OrdersDataProvider extends FilterablePageableDataProvider<Order, Ob
 
 	@Override
 	protected int sizeInBackEnd(Query<Order, Object> query) {
-		return (int) orderService.countAnyMatchingAfterDueDate(getOptionalFilter(), getOptionalFilterDate());
+		return (int) orderService.countAnyMatchingAfterValidTo(getOptionalFilter(), getOptionalFilterDate());
 	}
 
 	@Override
 	protected List<QuerySortOrder> getDefaultSortOrders() {
 		List<QuerySortOrder> sortOrders = new ArrayList<>();
-		sortOrders.add(new QuerySortOrder("dueDate", SortDirection.ASCENDING));
-		sortOrders.add(new QuerySortOrder("dueTime", SortDirection.ASCENDING));
+		               
+		sortOrders.add(new QuerySortOrder("validFrom", SortDirection.ASCENDING));
+                sortOrders.add(new QuerySortOrder("validTo", SortDirection.ASCENDING));
 		// id included only to always get a stable sort order
 		sortOrders.add(new QuerySortOrder("id", SortDirection.DESCENDING));
 		return sortOrders;

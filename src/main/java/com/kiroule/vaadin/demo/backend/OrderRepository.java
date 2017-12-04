@@ -21,43 +21,43 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	Order findOne(Long id);
 
 	@EntityGraph(value = "Order.gridData", type = EntityGraphType.LOAD)
-	Page<Order> findByDueDateAfter(LocalDate filterDate, Pageable pageable);
+	Page<Order> findByValidToAfter(LocalDate filterDate, Pageable pageable);
 
 	@Override
 	@EntityGraph(value = "Order.gridData", type = EntityGraphType.LOAD)
 	Page<Order> findAll(Pageable pageable);
 
 	@EntityGraph(value = "Order.gridData", type = EntityGraphType.LOAD)
-	Page<Order> findByCustomerFullNameContainingIgnoreCase(String searchQuery, Pageable pageable);
+	Page<Order> findByNameContainingIgnoreCase(String searchQuery, Pageable pageable);
 
 	@EntityGraph(value = "Order.gridData", type = EntityGraphType.LOAD)
-	Page<Order> findByCustomerFullNameContainingIgnoreCaseAndDueDateAfter(String searchQuery, LocalDate dueDate,
+	Page<Order> findByNameContainingIgnoreCaseAndValidToAfter(String searchQuery, LocalDate validTo,
 			Pageable pageable);
 
-	long countByDueDateAfterAndStateIn(LocalDate dueDate, Collection<OrderState> states);
+	//long countByDueDateAfterAndStateIn(LocalDate dueDate, Collection<OrderState> states);
 
-	long countByDueDateAfter(LocalDate dueDate);
+	long countByValidToAfter(LocalDate validTo);
 
-	long countByCustomerFullNameContainingIgnoreCase(String searchQuery);
+	long countByNameContainingIgnoreCase(String searchQuery);
 
-	long countByCustomerFullNameContainingIgnoreCaseAndDueDateAfter(String searchQuery, LocalDate dueDate);
+	long countByNameContainingIgnoreCaseAndValidToAfter(String searchQuery, LocalDate validTo);
 
-	long countByDueDate(LocalDate dueDate);
+	long countByValidTo(LocalDate validTo);
 
-	long countByDueDateAndStateIn(LocalDate dueDate, Collection<OrderState> state);
+	//long countByDueDateAndStateIn(LocalDate dueDate, Collection<OrderState> state);
 
-	long countByState(OrderState state);
+	//long countByState(OrderState state);
 
-	@Query("SELECT month(dueDate) as month, count(*) as deliveries FROM OrderInfo o where o.state=?1 and year(dueDate)=?2 group by month(dueDate)")
-	List<Object[]> countPerMonth(OrderState orderState, int year);
-
-	@Query("SELECT year(o.dueDate) as y, month(o.dueDate) as m, sum(oi.quantity*p.price) as deliveries FROM OrderInfo o JOIN o.items oi JOIN oi.product p where o.state=?1 and year(o.dueDate)<=?2 AND year(o.dueDate)>=(?2-3) group by year(o.dueDate),month(o.dueDate) order by y desc,month(o.dueDate)")
-	List<Object[]> sumPerMonthLastThreeYears(OrderState orderState, int year);
-
-	@Query("SELECT day(dueDate) as day, count(*) as deliveries FROM OrderInfo o where o.state=?1 and year(dueDate)=?2 and month(dueDate)=?3 group by day(dueDate)")
-	List<Object[]> countPerDay(OrderState orderState, int year, int month);
-
-	@Query("SELECT sum(oi.quantity),p FROM OrderInfo o JOIN o.items oi JOIN oi.product p WHERE o.state=?1 AND year(o.dueDate)=?2 AND month(o.dueDate)=?3 GROUP BY p.id ORDER BY p.id")
-	List<Object[]> countPerProduct(OrderState orderState, int year, int month);
+//	@Query("SELECT month(dueDate) as month, count(*) as deliveries FROM OrderInfo o where o.state=?1 and year(dueDate)=?2 group by month(dueDate)")
+//	List<Object[]> countPerMonth(OrderState orderState, int year);
+//
+//	@Query("SELECT year(o.dueDate) as y, month(o.dueDate) as m, sum(oi.quantity*p.price) as deliveries FROM OrderInfo o JOIN o.items oi JOIN oi.product p where o.state=?1 and year(o.dueDate)<=?2 AND year(o.dueDate)>=(?2-3) group by year(o.dueDate),month(o.dueDate) order by y desc,month(o.dueDate)")
+//	List<Object[]> sumPerMonthLastThreeYears(OrderState orderState, int year);
+//
+//	@Query("SELECT day(dueDate) as day, count(*) as deliveries FROM OrderInfo o where o.state=?1 and year(dueDate)=?2 and month(dueDate)=?3 group by day(dueDate)")
+//	List<Object[]> countPerDay(OrderState orderState, int year, int month);
+//
+//	@Query("SELECT sum(oi.quantity),p FROM OrderInfo o JOIN o.items oi JOIN oi.product p WHERE o.state=?1 AND year(o.dueDate)=?2 AND month(o.dueDate)=?3 GROUP BY p.id ORDER BY p.id")
+//	List<Object[]> countPerProduct(OrderState orderState, int year, int month);
 
 }

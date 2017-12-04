@@ -26,6 +26,8 @@ import com.kiroule.vaadin.demo.backend.data.entity.OrderItem;
 import com.kiroule.vaadin.demo.backend.data.entity.PickupLocation;
 import com.kiroule.vaadin.demo.backend.data.entity.Product;
 import com.kiroule.vaadin.demo.backend.data.entity.User;
+import java.time.ZoneId;
+import java.util.Date;
 
 @SpringComponent
 public class DataGenerator implements HasLogger {
@@ -41,6 +43,8 @@ public class DataGenerator implements HasLogger {
 			"Huber", "Patton", "Wilkinson", "Thornton", "Nunez", "Macias", "Gallegos", "Blevins", "Mejia", "Pickett",
 			"Whitney", "Farmer", "Henry", "Chen", "Macias", "Rowland", "Pierce", "Cortez", "Noble", "Howard", "Nixon",
 			"Mcbride", "Leblanc", "Russell", "Carver", "Benton", "Maldonado", "Lyons" };
+        private static final String[] PLACES = new String[] { "Kothrud", "Shivaji Nagar", "Baner", "EON",
+			"Kharadi","Chandani Choowk","Pashan", "SB Road","Hadapsar"};
 
 	private final Random random = new Random(1L);
 
@@ -59,15 +63,21 @@ public class DataGenerator implements HasLogger {
 				return;
 			}
 
-			getLogger().info("Generating demo data");
-			getLogger().info("... generating users");
-			createUsers(userRepository, passwordEncoder);
-//			getLogger().info("... generating products");
-//			createProducts(productRepository);
-//			getLogger().info("... generating pickup locations");
-//			createPickupLocations(pickupLocationRepository);
-//			getLogger().info("... generating orders");
-//			createOrders(orderRepository);
+			
+                        try {
+                            getLogger().info("Generating demo data");
+                            getLogger().info("... generating users");
+                            createUsers(userRepository, passwordEncoder);
+    //			getLogger().info("... generating products");
+    //			createProducts(productRepository);
+    //			getLogger().info("... generating pickup locations");
+    //			createPickupLocations(pickupLocationRepository);
+                            getLogger().info("... generating orders");
+                            createOrders(orderRepository);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+			
 
 			getLogger().info("Generated demo data");
 		};
@@ -101,6 +111,7 @@ public class DataGenerator implements HasLogger {
 		LocalDate oldestDate = LocalDate.of(now.getYear() - yearsToInclude, 1, 1);
 		LocalDate newestDate = now.plusMonths(1L);
 
+                int j=0;
 		for (LocalDate dueDate = oldestDate; dueDate.isBefore(newestDate); dueDate = dueDate.plusDays(1)) {
 			// Create a slightly upwards trend - everybody wants to be
 			// successful
@@ -111,87 +122,102 @@ public class DataGenerator implements HasLogger {
 			for (int i = 0; i < ordersThisDay; i++) {
 				orders.add(createOrder(dueDate));
 			}
+                        j++;
+                        if(j==100)
+                            break;
 		}
 		orderRepository.save(orders);
 	}
 
 	private Order createOrder(LocalDate dueDate) {
 		Order order = new Order();
+                
+                order.setChargeable(false);                
+                order.setEmail("rajkiran.sonde@tieto.com");
+                order.setEndPoint(getRandom(PLACES));
+                LocalTime startTime = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()).toLocalTime();
+                LocalDate startDate = LocalDate.now();
+                order.setEndTime(startTime.plusHours(1));
+                order.setIsActive(true);
+                order.setName("Rajkiran sonde");
+                order.setPhone(9881409240L);
+                order.setRouteId(1L);
+                order.setStartPoint(getRandom(PLACES));
+                order.setStartTime(startTime);
+                order.setValidFrom(startDate);
+                order.setValidTo(startDate.plusDays(30));
+                order.setVehicleBrand("Maruti Suzuki Baleno");
+                order.setVehicleNumber("MH20CH283");
+                order.setVehicleType(4L);
 
-		order.setCustomer(createCustomer());
-		order.setPickupLocation(getRandomPickupLocation());
-		order.setDueDate(dueDate);
-		order.setDueTime(getRandomDueTime());
-		order.setState(getRandomState(order.getDueDate()));
-
-		int itemCount = random.nextInt(3);
-		List<OrderItem> items = new ArrayList<>();
-		for (int i = 0; i <= itemCount; i++) {
-			OrderItem item = new OrderItem();
-			Product product;
-			do {
-				product = getRandomProduct();
-			} while (containsProduct(items, product));
-			item.setProduct(product);
-			item.setQuantity(random.nextInt(10) + 1);
-			if (random.nextInt(5) == 0) {
-				if (random.nextBoolean()) {
-					item.setComment("Lactose free");
-				} else {
-					item.setComment("Gluten free");
-				}
-			}
-			items.add(item);
-		}
-		order.setItems(items);
-
-		order.setHistory(createOrderHistory(order));
+//		int itemCount = random.nextInt(3);
+//		List<OrderItem> items = new ArrayList<>();
+//		for (int i = 0; i <= itemCount; i++) {
+//			OrderItem item = new OrderItem();
+//			Product product;
+//			do {
+//				product = getRandomProduct();
+//			} while (containsProduct(items, product));
+//			item.setProduct(product);
+//			item.setQuantity(random.nextInt(10) + 1);
+//			if (random.nextInt(5) == 0) {
+//				if (random.nextBoolean()) {
+//					item.setComment("Lactose free");
+//				} else {
+//					item.setComment("Gluten free");
+//				}
+//			}
+//			items.add(item);
+//		}
+//		order.setItems(items);
+//
+//		order.setHistory(createOrderHistory(order));
 
 		return order;
 	}
 
-	private List<HistoryItem> createOrderHistory(Order order) {
-		ArrayList<HistoryItem> history = new ArrayList<>();
-		HistoryItem item = new HistoryItem(getBarista(), "Order placed");
-		item.setNewState(OrderState.NEW);
-		LocalDateTime orderPlaced = order.getDueDate().minusDays(random.nextInt(5) + 2L).atTime(random.nextInt(10) + 7,
-				00);
-		item.setTimestamp(orderPlaced);
-		history.add(item);
-		if (order.getState() == OrderState.CANCELLED) {
-			item = new HistoryItem(getBarista(), "Order cancelled");
-			item.setNewState(OrderState.CANCELLED);
-			item.setTimestamp(orderPlaced.plusDays(random
-					.nextInt((int) orderPlaced.until(order.getDueDate().atTime(order.getDueTime()), ChronoUnit.DAYS))));
-			history.add(item);
-		} else if (order.getState() == OrderState.CONFIRMED || order.getState() == OrderState.DELIVERED
-				|| order.getState() == OrderState.PROBLEM || order.getState() == OrderState.READY) {
-			item = new HistoryItem(getBaker(), "Order confirmed");
-			item.setNewState(OrderState.CONFIRMED);
-			item.setTimestamp(orderPlaced.plusDays(random.nextInt(2)).plusHours(random.nextInt(5)));
-			history.add(item);
-
-			if (order.getState() == OrderState.PROBLEM) {
-				item = new HistoryItem(getBaker(), "Can't make it. Did not get any ingredients this morning");
-				item.setNewState(OrderState.PROBLEM);
-				item.setTimestamp(order.getDueDate().atTime(random.nextInt(4) + 4, 0));
-				history.add(item);
-			} else if (order.getState() == OrderState.READY || order.getState() == OrderState.DELIVERED) {
-				item = new HistoryItem(getBaker(), "Order ready for pickup");
-				item.setNewState(OrderState.READY);
-				item.setTimestamp(order.getDueDate().atTime(random.nextInt(2) + 8, random.nextBoolean() ? 0 : 30));
-				history.add(item);
-				if (order.getState() == OrderState.DELIVERED) {
-					item = new HistoryItem(getBaker(), "Order delivered");
-					item.setNewState(OrderState.DELIVERED);
-					item.setTimestamp(order.getDueDate().atTime(order.getDueTime().minusMinutes(random.nextInt(120))));
-					history.add(item);
-				}
-			}
-		}
-
-		return history;
-	}
+//	private List<HistoryItem> createOrderHistory(Order order) {
+//		ArrayList<HistoryItem> history = new ArrayList<>();
+//		HistoryItem item = new HistoryItem(getBarista(), "Order placed");
+//		item.setNewState(OrderState.NEW);
+//		LocalDateTime orderPlaced = order.getDueDate().minusDays(random.nextInt(5) + 2L).atTime(random.nextInt(10) + 7,
+//				00);
+//		item.setTimestamp(orderPlaced);
+//		history.add(item);
+//		if (order.getState() == OrderState.CANCELLED) {
+//			item = new HistoryItem(getBarista(), "Order cancelled");
+//			item.setNewState(OrderState.CANCELLED);
+//			item.setTimestamp(orderPlaced.plusDays(random
+//					.nextInt((int) orderPlaced.until(order.getDueDate().atTime(order.getDueTime()), ChronoUnit.DAYS))));
+//			history.add(item);
+//		} else if (order.getState() == OrderState.CONFIRMED || order.getState() == OrderState.DELIVERED
+//				|| order.getState() == OrderState.PROBLEM || order.getState() == OrderState.READY) {
+//			item = new HistoryItem(getBaker(), "Order confirmed");
+//			item.setNewState(OrderState.CONFIRMED);
+//			item.setTimestamp(orderPlaced.plusDays(random.nextInt(2)).plusHours(random.nextInt(5)));
+//			history.add(item);
+//
+//			if (order.getState() == OrderState.PROBLEM) {
+//				item = new HistoryItem(getBaker(), "Can't make it. Did not get any ingredients this morning");
+//				item.setNewState(OrderState.PROBLEM);
+//				item.setTimestamp(order.getDueDate().atTime(random.nextInt(4) + 4, 0));
+//				history.add(item);
+//			} else if (order.getState() == OrderState.READY || order.getState() == OrderState.DELIVERED) {
+//				item = new HistoryItem(getBaker(), "Order ready for pickup");
+//				item.setNewState(OrderState.READY);
+//				item.setTimestamp(order.getDueDate().atTime(random.nextInt(2) + 8, random.nextBoolean() ? 0 : 30));
+//				history.add(item);
+//				if (order.getState() == OrderState.DELIVERED) {
+//					item = new HistoryItem(getBaker(), "Order delivered");
+//					item.setNewState(OrderState.DELIVERED);
+//					item.setTimestamp(order.getDueDate().atTime(order.getDueTime().minusMinutes(random.nextInt(120))));
+//					history.add(item);
+//				}
+//			}
+//		}
+//
+//		return history;
+//	}
 
 	private boolean containsProduct(List<OrderItem> items, Product product) {
 		for (OrderItem item : items) {

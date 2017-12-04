@@ -36,16 +36,16 @@ public class OrdersGrid extends Grid<Order> {
 
 		// Due column
 		Column<Order, String> dueColumn = addColumn(
-				order -> twoRowCell(getTimeHeader(order.getDueDate()), String.valueOf(order.getDueTime())),
+				order -> twoRowCell(getTimeHeader(order.getValidFrom()), String.valueOf(order.getValidTo())),
 				new HtmlRenderer());
-		dueColumn.setSortProperty("dueDate", "dueTime");
+		dueColumn.setSortProperty("validFrom", "validTo");
 		dueColumn.setStyleGenerator(order -> "due");
 
 		// Summary column
 		Column<Order, String> summaryColumn = addColumn(order -> {
-			Customer customer = order.getCustomer();
-			return twoRowCell(customer.getFullName(), getOrderSummary(order));
-		}, new HtmlRenderer()).setExpandRatio(1).setSortProperty("customer.fullName").setMinimumWidthFromContent(false);
+			String fromTo=order.getStartPoint()+" to "+ order.getEndPoint();
+			return twoRowCell(fromTo, getOrderSummary(order));
+		}, new HtmlRenderer()).setExpandRatio(1).setSortProperty("fromTo").setMinimumWidthFromContent(false);
 		summaryColumn.setStyleGenerator(order -> "summary");
 	}
 
@@ -86,9 +86,10 @@ public class OrdersGrid extends Grid<Order> {
 	}
 
 	private static String getRowStyle(Order order) {
-		String style = order.getState().name().toLowerCase();
+		//String style = order.getState().name().toLowerCase();
+                String style = "";
 
-		long days = LocalDate.now().until(order.getDueDate(), ChronoUnit.DAYS);
+		long days = LocalDate.now().until(order.getValidFrom(), ChronoUnit.DAYS);
 		if (days == 0) {
 			style += " today";
 		} else if (days == 1) {
@@ -99,9 +100,11 @@ public class OrdersGrid extends Grid<Order> {
 	}
 
 	private static String getOrderSummary(Order order) {
-		Stream<String> quantityAndName = order.getItems().stream()
-				.map(item -> item.getQuantity() + "x " + item.getProduct().getName());
-		return quantityAndName.collect(Collectors.joining(", "));
+//		Stream<String> quantityAndName = order.getItems().stream()
+//				.map(item -> item.getQuantity() + "x " + item.getProduct().getName());
+//		return quantityAndName.collect(Collectors.joining(", "));
+                
+                return order.getName()+"|"+order.getStartTime()+"|"+order.getStartPoint();
 	}
 
 	private static String twoRowCell(String header, String content) {

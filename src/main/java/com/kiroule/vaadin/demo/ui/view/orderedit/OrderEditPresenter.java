@@ -100,12 +100,12 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 		if (id == null) {
 			// New
 			order = new Order();
-			order.setState(OrderState.NEW);
-			order.setItems(new ArrayList<>());
-			order.setCustomer(new Customer());
-			order.setDueDate(LocalDate.now().plusDays(1));
-			order.setDueTime(LocalTime.of(8, 00));
-			order.setPickupLocation(pickupLocationService.getDefault());
+//			order.setState(OrderState.NEW);
+//			order.setItems(new ArrayList<>());
+//			order.setCustomer(new Customer());
+//			order.setDueDate(LocalDate.now().plusDays(1));
+//			order.setDueTime(LocalTime.of(8, 00));
+//			order.setPickupLocation(pickupLocationService.getDefault());
 		} else {
 			order = orderService.findOrder(id);
 			if (order == null) {
@@ -118,9 +118,9 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 	}
 
 	private void updateTotalSum() {
-		int sum = view.getOrder().getItems().stream().filter(item -> item.getProduct() != null)
-				.collect(Collectors.summingInt(item -> item.getProduct().getPrice() * item.getQuantity()));
-		view.setSum(sum);
+//		int sum = view.getOrder().getItems().stream().filter(item -> item.getProduct() != null)
+//				.collect(Collectors.summingInt(item -> item.getProduct().getPrice() * item.getQuantity()));
+//		view.setSum(sum);
 	}
 
 	public void editBackCancelPressed() {
@@ -145,12 +145,13 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 		if (view.getMode() == Mode.REPORT) {
 			// Set next state
 			Order order = view.getOrder();
-			Optional<OrderState> nextState = getNextHappyPathState(order.getState());
+			//Optional<OrderState> nextState = getNextHappyPathState(order.getState());
+                        Optional<OrderState> nextState = null;
 			if (!nextState.isPresent()) {
 				throw new IllegalStateException(
 						"The next state button should never be enabled when the state does not follow the happy path");
 			}
-			orderService.changeState(order, nextState.get(), SecurityUtils.getCurrentUser(userService));
+			//orderService.changeState(order, nextState.get(), SecurityUtils.getCurrentUser(userService));
 			refresh(order.getId());
 		} else if (view.getMode() == Mode.CONFIRMATION) {
 			Order order = saveOrder();
@@ -201,11 +202,11 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 
 	private void filterEmptyProducts() {
 		LinkedList<OrderItem> emptyRows = new LinkedList<>();
-		view.getOrder().getItems().forEach(orderItem -> {
-			if (orderItem.getProduct() == null) {
-				emptyRows.add(orderItem);
-			}
-		});
+//		view.getOrder().getItems().forEach(orderItem -> {
+//			if (orderItem.getProduct() == null) {
+//				emptyRows.add(orderItem);
+//			}
+//		});
 		emptyRows.forEach(this::removeOrderItem);
 	}
 

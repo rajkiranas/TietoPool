@@ -100,7 +100,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 	}
 
 	public void setOrder(Order order) {
-		stateLabel.setValue(order.getState().getDisplayName());
+		//stateLabel.setValue(order.getState().getDisplayName());
 		binder.setBean(order);
 		productInfoContainer.removeAllComponents();
 
@@ -110,11 +110,11 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 			dueDate.focus();
 		} else {
 			orderId.setValue("#" + order.getId());
-			for (OrderItem item : order.getItems()) {
-				ProductInfo productInfo = createProductInfo(item);
-				productInfo.setReportMode(mode != Mode.EDIT);
-				productInfoContainer.addComponent(productInfo);
-			}
+//			for (OrderItem item : order.getItems()) {
+//				ProductInfo productInfo = createProductInfo(item);
+//				productInfo.setReportMode(mode != Mode.EDIT);
+//				productInfoContainer.addComponent(productInfo);
+//			}
 			history.setOrder(order);
 		}
 		hasChanges = false;
@@ -125,11 +125,11 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		ProductInfo productInfo = createProductInfo(orderItem);
 		productInfoContainer.addComponent(productInfo);
 		productInfo.focus();
-		getOrder().getItems().add(orderItem);
+		//getOrder().getItems().add(orderItem);
 	}
 
 	protected void removeOrderItem(OrderItem orderItem) {
-		getOrder().getItems().remove(orderItem);
+		//getOrder().getItems().remove(orderItem);
 
 		for (Component c : productInfoContainer) {
 			if (c instanceof ProductInfo && ((ProductInfo) c).getItem() == orderItem) {
@@ -188,9 +188,9 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		if (mode == Mode.REPORT) {
 			cancel.setCaption("Edit");
 			cancel.setIcon(VaadinIcons.EDIT);
-			Optional<OrderState> nextState = presenter.getNextHappyPathState(getOrder().getState());
-			ok.setCaption("Mark as " + nextState.map(OrderState::getDisplayName).orElse("?"));
-			ok.setVisible(nextState.isPresent());
+			//Optional<OrderState> nextState = presenter.getNextHappyPathState(getOrder().getState());
+//			ok.setCaption("Mark as " + nextState.map(OrderState::getDisplayName).orElse("?"));
+//			ok.setVisible(nextState.isPresent());
 		} else if (mode == Mode.CONFIRMATION) {
 			cancel.setCaption("Back");
 			cancel.setIcon(VaadinIcons.ANGLE_LEFT);
