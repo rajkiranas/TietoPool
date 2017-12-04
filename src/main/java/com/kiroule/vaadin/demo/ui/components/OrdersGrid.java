@@ -36,7 +36,7 @@ public class OrdersGrid extends Grid<Order> {
 
 		// Due column
 		Column<Order, String> dueColumn = addColumn(
-				order -> twoRowCell(getTimeHeader(order.getValidFrom()), String.valueOf(order.getValidTo())),
+				order -> threeRowCell(getTimeHeader(), "From:"+String.valueOf(order.getValidFrom()),"To:"+String.valueOf(order.getValidTo())),
 				new HtmlRenderer());
 		dueColumn.setSortProperty("validFrom", "validTo");
 		dueColumn.setStyleGenerator(order -> "due");
@@ -44,7 +44,7 @@ public class OrdersGrid extends Grid<Order> {
 		// Summary column
 		Column<Order, String> summaryColumn = addColumn(order -> {
 			String fromTo=order.getStartPoint()+" to "+ order.getEndPoint();
-			return twoRowCell(fromTo, getOrderSummary(order));
+			return twoRowCell(fromTo, getListingSummary(order));
 		}, new HtmlRenderer()).setExpandRatio(1).setSortProperty("fromTo").setMinimumWidthFromContent(false);
 		summaryColumn.setStyleGenerator(order -> "summary");
 	}
@@ -67,22 +67,23 @@ public class OrdersGrid extends Grid<Order> {
 	 * @return A formatted string depending on how far in the future the date
 	 *         is.
 	 */
-	private static String getTimeHeader(LocalDate dueDate) {
-		LocalDate today = LocalDate.now();
-		if (dueDate.isEqual(today)) {
-			return "Today";
-		} else {
-			// Show weekday for upcoming days
-			LocalDate todayNextWeek = today.plusDays(7);
-			if (dueDate.isAfter(today) && dueDate.isBefore(todayNextWeek)) {
-				// "Mon 7"
-				return dueDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US) + " "
-						+ dueDate.getDayOfMonth();
-			} else {
-				// In the past or more than a week in the future
-				return dueDate.getDayOfMonth() + " " + dueDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.US);
-			}
-		}
+	private static String getTimeHeader() {
+//		LocalDate today = LocalDate.now();
+//		if (dueDate.isEqual(today)) {
+//			return "Today";
+//		} else {
+//			// Show weekday for upcoming days
+//			LocalDate todayNextWeek = today.plusDays(7);
+//			if (dueDate.isAfter(today) && dueDate.isBefore(todayNextWeek)) {
+//				// "Mon 7"
+//				return dueDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US) + " "
+//						+ dueDate.getDayOfMonth();
+//			} else {
+//				// In the past or more than a week in the future
+//				return dueDate.getDayOfMonth() + " " + dueDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.US);
+//			}
+//		}
+            return "Duration";
 	}
 
 	private static String getRowStyle(Order order) {
@@ -99,17 +100,28 @@ public class OrdersGrid extends Grid<Order> {
 		return style;
 	}
 
-	private static String getOrderSummary(Order order) {
+	private static String getListingSummary(Order order) {
 //		Stream<String> quantityAndName = order.getItems().stream()
 //				.map(item -> item.getQuantity() + "x " + item.getProduct().getName());
 //		return quantityAndName.collect(Collectors.joining(", "));
                 
-                return order.getName()+"|"+order.getStartTime()+"|"+order.getStartPoint();
+                return order.getName()+"|"
+                        +order.getVehicleBrand()+"|"
+                        +order.getVehicleNumber()+"|"
+                        +"Start time:"+order.getStartTime()+"|"
+                        +"Start point:"+order.getStartPoint()+"|"
+                        +"End point:"+order.getEndPoint();
 	}
 
 	private static String twoRowCell(String header, String content) {
 		return "<div class=\"header\">" + HtmlUtils.htmlEscape(header) + "</div><div class=\"content\">"
 				+ HtmlUtils.htmlEscape(content) + "</div>";
+	}
+        
+        private static String threeRowCell(String header, String content1, String content2) {
+		return "<div class=\"header\" align=\"left\">" + HtmlUtils.htmlEscape(header) + "</div><div class=\"content\">"+
+				"<div class=\"content\" align=\"left\">"+ HtmlUtils.htmlEscape(content1) + "</div>"
+                        +"<div class=\"content\" align=\"left\">"+ HtmlUtils.htmlEscape(content2) + "</div>";
 	}
 
 }

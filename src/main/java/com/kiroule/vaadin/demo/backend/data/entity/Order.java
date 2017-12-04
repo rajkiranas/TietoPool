@@ -22,6 +22,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import javax.validation.constraints.Size;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -87,6 +88,9 @@ public class Order extends AbstractEntity {
     
     @Column(name = "inactiveEndDt")    
     private LocalDate inactiveEndDt;
+    
+    @Column(name = "no_seats")
+    private int noSeats;
 
     public Order() {
     }
@@ -226,4 +230,18 @@ public class Order extends AbstractEntity {
     public void setInactiveEndDt(LocalDate inactiveEndDt) {
         this.inactiveEndDt = inactiveEndDt;
     }    
+
+    /**
+     * @return the noSeats
+     */
+    public int getNoSeats() {
+        return noSeats;
+    }
+
+    /**
+     * @param noSeats the noSeats to set
+     */
+    public void setNoSeats(int noSeats) {
+        this.noSeats = noSeats;
+    }
 }

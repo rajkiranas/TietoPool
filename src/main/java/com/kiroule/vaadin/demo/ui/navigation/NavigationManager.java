@@ -61,7 +61,8 @@ public class NavigationManager extends SpringNavigator {
 			return;
 		}
 
-		navigateTo(SecurityUtils.isCurrentUserInRole(Role.ADMIN) ? DashboardView.class : StorefrontView.class);
+		//navigateTo(SecurityUtils.isCurrentUserInRole(Role.ADMIN) ? DashboardView.class : StorefrontView.class);
+                navigateTo(SecurityUtils.isCurrentUserInRole(Role.ADMIN) ? StorefrontView.class : StorefrontView.class);
 	}
 
 	/**

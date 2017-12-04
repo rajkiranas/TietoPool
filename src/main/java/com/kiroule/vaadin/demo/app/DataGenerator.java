@@ -149,6 +149,7 @@ public class DataGenerator implements HasLogger {
                 order.setVehicleBrand("Maruti Suzuki Baleno");
                 order.setVehicleNumber("MH20CH283");
                 order.setVehicleType(4L);
+                order.setNoSeats(4);
 
 //		int itemCount = random.nextInt(3);
 //		List<OrderItem> items = new ArrayList<>();
@@ -343,11 +344,12 @@ public class DataGenerator implements HasLogger {
 	}
 
 	private void createUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-		baker = userRepository.save(new User("baker@vaadin.com", "Heidi", passwordEncoder.encode("baker"), Role.BAKER,9881409240L));
-		User user = new User("barista@vaadin.com", "Malin", passwordEncoder.encode("barista"), Role.BARISTA,9881409240L);
-		user.setLocked(true);
-		barista = userRepository.save(user);
-		user = new User("admin@vaadin.com", "Göran", passwordEncoder.encode("admin"), Role.ADMIN,9881409240L);
+//		baker = userRepository.save(new User("baker@vaadin.com", "Heidi", passwordEncoder.encode("baker"), Role.BAKER,9881409240L));
+//		User user = new User("barista@vaadin.com", "Malin", passwordEncoder.encode("barista"), Role.BARISTA,9881409240L);
+//		user.setLocked(true);
+//		barista = userRepository.save(user);
+                
+		User user = new User("user@tieto.com", "Göran", passwordEncoder.encode("tieto"), Role.ADMIN,9881409240L);
 		user.setLocked(true);
 		userRepository.save(user);
 	}
