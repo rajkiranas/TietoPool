@@ -25,7 +25,9 @@ import com.kiroule.vaadin.demo.backend.data.entity.Order;
 import com.kiroule.vaadin.demo.backend.data.entity.OrderItem;
 import com.kiroule.vaadin.demo.backend.data.entity.PickupLocation;
 import com.kiroule.vaadin.demo.backend.data.entity.Product;
+import com.kiroule.vaadin.demo.backend.data.entity.Route;
 import com.kiroule.vaadin.demo.backend.data.entity.User;
+import com.kiroule.vaadin.demo.backend.service.RouteService;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -56,7 +58,7 @@ public class DataGenerator implements HasLogger {
 	@Bean
 	public CommandLineRunner loadData(OrderRepository orderRepository, UserRepository userRepository,
 			ProductRepository productRepository, PickupLocationRepository pickupLocationRepository,
-			PasswordEncoder passwordEncoder) {
+			PasswordEncoder passwordEncoder, RouteService routeService) {
 		return args -> {
 			if (hasData(userRepository)) {
 				getLogger().info("Using existing database");
@@ -73,7 +75,7 @@ public class DataGenerator implements HasLogger {
     //			getLogger().info("... generating pickup locations");
     //			createPickupLocations(pickupLocationRepository);
                             getLogger().info("... generating orders");
-                            createOrders(orderRepository);
+                            createOrders(orderRepository, routeService);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -103,7 +105,7 @@ public class DataGenerator implements HasLogger {
 		return "+1-555-" + String.format("%04d", random.nextInt(10000));
 	}
 
-	private void createOrders(OrderRepository orderRepository) {
+	private void createOrders(OrderRepository orderRepository, RouteService routeService) {
 		int yearsToInclude = 2;
 		List<Order> orders = new ArrayList<>();
 
@@ -120,7 +122,7 @@ public class DataGenerator implements HasLogger {
 			double multiplier = 1.0 + 0.03 * relativeMonth;
 			int ordersThisDay = (int) (random.nextInt(10) + 1 * multiplier);
 			for (int i = 0; i < ordersThisDay; i++) {
-				orders.add(createOrder(dueDate));
+				orders.add(createOrder(routeService));
 			}
                         j++;
                         if(j==100)
@@ -129,7 +131,7 @@ public class DataGenerator implements HasLogger {
 		orderRepository.save(orders);
 	}
 
-	private Order createOrder(LocalDate dueDate) {
+	private Order createOrder(RouteService routeService) {
 		Order order = new Order();
                 
                 order.setChargeable(false);                
@@ -140,8 +142,8 @@ public class DataGenerator implements HasLogger {
                 order.setEndTime(startTime.plusHours(1));
                 order.setIsActive(true);
                 order.setName("Rajkiran sonde");
-                order.setPhone(9881409240L);
-                order.setRouteId(1L);
+                order.setPhone(9881409240L);                
+                order.setRoute(routeService.findRoute(1L));
                 order.setStartPoint(getRandom(PLACES));
                 order.setStartTime(startTime);
                 order.setValidFrom(startDate);
@@ -349,7 +351,11 @@ public class DataGenerator implements HasLogger {
 //		user.setLocked(true);
 //		barista = userRepository.save(user);
                 
-		User user = new User("user@tieto.com", "Göran", passwordEncoder.encode("tieto"), Role.ADMIN,9881409240L);
+		User user = new User("owner@tieto.com", "Göran", passwordEncoder.encode("tieto"), Role.ADMIN,9881409240L);
+		user.setLocked(true);
+		userRepository.save(user);
+                
+                user = new User("consumer@tieto.com", "Daniel", passwordEncoder.encode("tieto"), Role.ADMIN,9881409240L);
 		user.setLocked(true);
 		userRepository.save(user);
 	}

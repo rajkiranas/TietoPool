@@ -36,7 +36,7 @@ public class OrdersGrid extends Grid<Order> {
 
 		// Due column
 		Column<Order, String> dueColumn = addColumn(
-				order -> threeRowCell(getTimeHeader(), "From:"+String.valueOf(order.getValidFrom()),"To:"+String.valueOf(order.getValidTo())),
+				order -> threeRowCell(getTimeHeader(), String.valueOf(order.getValidFrom()),String.valueOf(order.getValidTo())),
 				new HtmlRenderer());
 		dueColumn.setSortProperty("validFrom", "validTo");
 		dueColumn.setStyleGenerator(order -> "due");
@@ -44,7 +44,7 @@ public class OrdersGrid extends Grid<Order> {
 		// Summary column
 		Column<Order, String> summaryColumn = addColumn(order -> {
 			String fromTo=order.getStartPoint()+" to "+ order.getEndPoint();
-			return twoRowCell(fromTo, getListingSummary(order));
+			return threeRowCell(fromTo, getListingSummary(order), order);
 		}, new HtmlRenderer()).setExpandRatio(1).setSortProperty("fromTo").setMinimumWidthFromContent(false);
 		summaryColumn.setStyleGenerator(order -> "summary");
 	}
@@ -109,8 +109,7 @@ public class OrdersGrid extends Grid<Order> {
                         +order.getVehicleBrand()+"|"
                         +order.getVehicleNumber()+"|"
                         +"Start time:"+order.getStartTime()+"|"
-                        +"Start point:"+order.getStartPoint()+"|"
-                        +"End point:"+order.getEndPoint();
+                        +"Available seats:"+order.getNoSeats();
 	}
 
 	private static String twoRowCell(String header, String content) {
@@ -119,9 +118,15 @@ public class OrdersGrid extends Grid<Order> {
 	}
         
         private static String threeRowCell(String header, String content1, String content2) {
-		return "<div class=\"header\" align=\"left\">" + HtmlUtils.htmlEscape(header) + "</div><div class=\"content\">"+
-				"<div class=\"content\" align=\"left\">"+ HtmlUtils.htmlEscape(content1) + "</div>"
-                        +"<div class=\"content\" align=\"left\">"+ HtmlUtils.htmlEscape(content2) + "</div>";
+		return "<div class=\"header\" >" + HtmlUtils.htmlEscape(header) 
+                        +"<br>From<br>" +HtmlUtils.htmlEscape(content1)
+                        +"<br>To<br>"+ HtmlUtils.htmlEscape(content2) + "</div>";
+	}
+        
+        private static String threeRowCell(String header, String content, Order order) {
+		return "<div class=\"header\">" + HtmlUtils.htmlEscape(header) + "</div>"
+                        + "<div class=\"content\">"+ HtmlUtils.htmlEscape(content) + "</div>"+
+                        "<div class=\"content\" align=\"left\">"+ "Via:"+HtmlUtils.htmlEscape(order.getRoute().getVia()) + "</div>";
 	}
 
 }

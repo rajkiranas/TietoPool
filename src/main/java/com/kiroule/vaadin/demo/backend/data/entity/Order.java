@@ -2,29 +2,16 @@ package com.kiroule.vaadin.demo.backend.data.entity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedEntityGraphs;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
-import javax.validation.constraints.NotNull;
-
-import com.kiroule.vaadin.demo.backend.data.OrderState;
-import java.util.Date;
 import javax.persistence.Column;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Version;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.validation.constraints.Size;
-
+import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
@@ -44,22 +31,27 @@ public class Order extends AbstractEntity {
     @Column(name = "name")
     private String name;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    
     @Size(max = 50)
     @Column(name = "email")
     private String email;
+    
     @Column(name = "phone")
     private Long phone;
+    
     @Column(name = "vehicleType")
     private Long vehicleType;
-    @Size(max = 200)
+    
+    @Size(max = 200)    
     @Column(name = "vehicleBrand")
     private String vehicleBrand;
-    @Column(name = "validFrom")
     
+    @Column(name = "validFrom")    
     private LocalDate validFrom;
-    @Column(name = "validTo")
     
+    @Column(name = "validTo")    
     private LocalDate validTo;
+    
     @Size(max = 200)
     @Column(name = "startPoint")
     private String startPoint;
@@ -73,12 +65,20 @@ public class Order extends AbstractEntity {
     
     @Column(name = "endTime")    
     private LocalTime endTime;
+    
     @Column(name = "isActive")
     private Boolean isActive;
-    @Column(name = "routeId")
-    private Long routeId;
+    
+//    @Column(name = "routeId")
+//    private Long routeId;
+    
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+//    @JoinColumn(name = "id", referencedColumnName = "id")
+    private Route route;
+    
     @Column(name = "chargeable")
     private Boolean chargeable;
+    
     @Size(max = 50)
     @Column(name = "vehicleNumber")
     private String vehicleNumber;
@@ -191,13 +191,13 @@ public class Order extends AbstractEntity {
         this.isActive = isActive;
     }
 
-    public Long getRouteId() {
-        return routeId;
-    }
-
-    public void setRouteId(Long routeId) {
-        this.routeId = routeId;
-    }
+//    public Long getRouteId() {
+//        return routeId;
+//    }
+//
+//    public void setRouteId(Long routeId) {
+//        this.routeId = routeId;
+//    }
 
     public Boolean getChargeable() {
         return chargeable;
@@ -243,5 +243,19 @@ public class Order extends AbstractEntity {
      */
     public void setNoSeats(int noSeats) {
         this.noSeats = noSeats;
+    }
+
+    /**
+     * @return the route
+     */
+    public Route getRoute() {
+        return route;
+    }
+
+    /**
+     * @param route the route to set
+     */
+    public void setRoute(Route route) {
+        this.route = route;
     }
 }
