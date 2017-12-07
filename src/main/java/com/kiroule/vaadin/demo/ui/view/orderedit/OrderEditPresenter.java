@@ -292,7 +292,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
         routes=routeService.getAllRoutes();
         List<String> stringRoutes = new ArrayList<String>();
          for (Route r : routes) {
-             stringRoutes.add(r.getId()+":"+r.getSource()+" to "+r.getDestination());
+             stringRoutes.add(r.getId()+":"+r.getSource()+"-to-"+r.getDestination());
          }
          view.route.setItems(stringRoutes);        
     }
@@ -310,7 +310,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
         //2:Manjri to Eon-Kharadi
         fromTo=fromTo.substring(fromTo.indexOf(":")+1);
         //System.out.println("fromTo="+fromTo);
-        String[] fromToArray = fromTo.split(" to ");
+        String[] fromToArray = fromTo.split("-to-");
 //        for (String string : fromToArray) {
 //            System.out.println("string="+string);
 //            
