@@ -5,19 +5,110 @@ Hint to Vaadin that if this page is ever sent back as response to a UIDL request
 
 Vaadin-Refresh: context://login.html
 -->
+
 <head>
   <title>TietoPool</title>
   
-  <link rel="shortcut icon" href="VAADIN/themes/apptheme/favicon.ico" />
-  
-  <link rel="icon" sizes="192x192" href="VAADIN/themes/apptheme/icon-192.png">
-  <link rel="icon" sizes="96x96" href="VAADIN/themes/apptheme/icon-96.png">
-  
-  <link rel="apple-touch-icon" sizes="192x192" href="VAADIN/themes/apptheme/icon-192.png">
-  <link rel="apple-touch-icon" sizes="96x96" href="VAADIN/themes/apptheme/icon-96.png">
-  
+  <link rel="shortcut icon"   
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-  
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>2 Rows Frames Layout (header frame)</title>
+		<style type="text/css">
+		
+		body {
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+			height: 100%; 
+			max-height: 100%; 
+			font-family:Sans-serif;
+			line-height: 1.5em;
+		}
+		
+		#header {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100px; 
+			overflow: hidden; /* Disables scrollbars on the navigation frame. To enable scrollbars, change "hidden" to "scroll" */
+			background: #38C4F0;
+		}
+		
+		#logo {
+			padding:10px;
+			float:left;
+		}
+		
+		main {
+			position: fixed;
+			top: 100px; /* Set this to the height of the header */
+			left: 0; 
+			right: 0;
+			bottom: 0;
+			overflow: auto; 
+			background: #fff;
+		}
+		
+		.innertube {
+			margin: 15px; /* Provides padding for the content */
+		}
+		
+		p {
+			color: #555;
+		}
+
+		/* Menu */
+		nav { 
+			margin:0 auto; 
+			padding:0; 
+			float:right;
+		}
+		nav ul { 
+			list-style:none; 
+			padding:0; 
+			float:left;
+		}
+		nav ul li { 
+			margin:0; 
+			padding:0 0 0 8px; 
+			float:left;
+		}
+		nav ul li a { 
+			display:block; 
+			margin:0; 
+			padding:8px 20px; 
+			color:darkgreen; 
+			text-decoration:none;
+		}
+		nav ul li.active a, #top-nav ul li a:hover { 
+			color:#d3d3f9;
+		}
+				
+		/*IE6 fix*/
+		* html body{
+			padding: 100px 0 0 0; /* Set the first value to the height of the header */
+		}
+		
+		* html main{ 
+			height: 100%; 
+			width: 100%; 
+		}
+		
+		</style>
+		
+		
+	</head>
+	
+	<body>		
+
+		<header id="header">
+			<div id="logo">
+				<h1 color="white" style="padding-left:150px">TietoPool</h1>
+			</div>
+			
+		</header>
+<head>
   <!-- Enable these to hide browser controls when app is started from homescreen:
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,42 +128,29 @@ Vaadin-Refresh: context://login.html
 	<style>
 		@font-face {
 			font-family: "Open Sans";
-			src: url(VAADIN/themes/valo/fonts/open-sans/OpenSans-Light-webfont.woff) format("woff");
 			font-weight: 300;
 			font-style: normal;
 		}
 		@font-face {
 			font-family: "Open Sans";
-			src: url(VAADIN/themes/valo/fonts/open-sans/OpenSans-Semibold-webfont.woff) format("woff");
 			font-weight: 600;
 			font-style: normal;
 		}
 		
     html {
-     background: linear-gradient(145deg, #484962 30%, #d06b41 100%);
+     background: linear-gradient(white 100%);
     }
     @media (min-width: 1000px) {
       /* load on wide screens */
       body {
         background-color: transparent;
-        background-image: url(VAADIN/themes/apptheme/bg.jpg);
         background-size: cover;
       }
     }
     button {
       background-color: #4b4b65;
     }
-    #logo {
-      display: inline-block;
-      width: 60px;
-      height: 60px;
-      border-radius: 100%;
-      background-image: url(VAADIN/themes/apptheme/icon-96.png);
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-color: rgba(255,255,255,0.2);
-      box-shadow: 3px 3px 8px rgba(0,0,0,.2);
-    }
+  
 
 		/* Layout */
 		*, *:before, *:after {
@@ -111,6 +189,7 @@ Vaadin-Refresh: context://login.html
 	    #logo {
 	      width:96px;
         height:96px;
+position: absolute;
 	    }
 	    #info, #form {
 	      height: 450px;
@@ -129,16 +208,20 @@ Vaadin-Refresh: context://login.html
     }
 		
 		/* Elements / components theme */
-		
+		p{
+			padding-top: 20px;
+		}
 		h1 {
+			
 			font-size: 36px;
 			font-weight: 100;
+              color: white;
 		}	
 		h2 {
 			font-size: 28px;
 			font-weight: 100;
 			margin-bottom: 14px;
-		}	
+               		}	
 		form {
 			max-width: 320px;
 		}
@@ -146,6 +229,7 @@ Vaadin-Refresh: context://login.html
 			font-size: 14px;
 			padding: 16px 0 5px 0;
 			display: inline-block; 
+            
 		}	
 		input[type='text'],
 		input[type='password'] {
@@ -205,13 +289,26 @@ Vaadin-Refresh: context://login.html
 			font-size: 14px;
 			padding: 8px;
 		}
+        .parent {
+   width: 60px; /* I took the width from your post and placed it in css */
+   height: 60px;
+}
+
+/* This will style any <img> element in .parent div */
+.parent img {
+   height: 30%;
+   width: 30%;
+	margin: auto;
+padding-top: 40px;
+}
 	</style>
 </head>
 <body onload="init()">
-	<div id="info">
-		<div id="logo"></div>
-		<h1>TietoPool</h1>
-		<p>admin@vaadin.com + admin <br> barista@vaadin.com + barista</p>
+	<div id="info" class="parent">
+		
+         <img src="C:\Users\ambalvis\Desktop\Pool UI\car.png" alt="" />
+		<h1 style="color:blue">TietoPool</h1>
+        <p style="color:blue;">admin@vaadin.com + admin <br> barista@vaadin.com + barista</p>
 	</div>
 	<div id="form">
 		<form method="post" action="login" id="theform">
