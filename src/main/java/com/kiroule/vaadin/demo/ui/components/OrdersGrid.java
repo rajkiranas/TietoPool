@@ -43,7 +43,7 @@ public class OrdersGrid extends Grid<Order> {
 
 		// Summary column
 		Column<Order, String> summaryColumn = addColumn(order -> {
-			String fromTo=order.getRoute().getSource()+" to "+ order.getRoute().getDestination();
+			String fromTo=order.getRoute().getSource()+"-to-"+ order.getRoute().getDestination();
 			return threeRowCell(fromTo, getListingSummary(order), order);
 		}, new HtmlRenderer()).setExpandRatio(1).setSortProperty("fromTo").setMinimumWidthFromContent(false);
 		summaryColumn.setStyleGenerator(order -> "summary");

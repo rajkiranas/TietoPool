@@ -36,7 +36,9 @@ import com.kiroule.vaadin.demo.ui.navigation.NavigationManager;
 import com.kiroule.vaadin.demo.ui.util.GoogleMapsUtil;
 import com.kiroule.vaadin.demo.ui.view.orderedit.OrderEditView.Mode;
 import com.kiroule.vaadin.demo.ui.view.storefront.StorefrontView;
+import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.server.AbstractErrorMessage;
+import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Component.Focusable;
 import com.vaadin.ui.Label;
@@ -68,6 +70,8 @@ public class OrderEditPresenter implements Serializable, HasLogger {
         @Autowired
         private RouteService routeService;    
         private List<Route> routes;
+        private VerticalLayout mapLayout;
+        private Label mapLabel;
 
 	@Autowired
 	public OrderEditPresenter(ViewEventBus viewEventBus, NavigationManager navigationManager, OrderService orderService,
@@ -276,12 +280,12 @@ public class OrderEditPresenter implements Serializable, HasLogger {
     }
 
     private void addPlacesMapToTheView() {
-        Label placeMap=new Label(mapsUtil.getPlaceMap("Pune"),ContentMode.HTML);
-                        VerticalLayout mapLayout = new VerticalLayout();
-                        mapLayout.setSizeFull();
-                        mapLayout.setMargin(true);
-                        mapLayout.addComponent(placeMap);
-                        view.formAndMapContainer.addComponent(mapLayout);
+        mapLabel = new Label(mapsUtil.getPlaceMap("Pune"), ContentMode.HTML);
+        mapLayout = new VerticalLayout();
+        mapLayout.setSizeFull();
+        mapLayout.setMargin(true);
+        mapLayout.addComponent(mapLabel);
+        view.formAndMapContainer.addComponent(mapLayout);
     }
     
      private void getRoutesInformation() {
@@ -291,5 +295,36 @@ public class OrderEditPresenter implements Serializable, HasLogger {
              stringRoutes.add(r.getId()+":"+r.getSource()+" to "+r.getDestination());
          }
          view.route.setItems(stringRoutes);        
+    }
+
+    public void routeSelected(ValueChangeEvent e) {
+        System.out.println("***"+e.getValue());
+//        System.out.println("***"+e.getSource().getValue());
+//        System.out.println("***"+e.getComponent());
+        String fromTo = String.valueOf(e.getSource().getValue());
+        updateMap(fromTo);
+    }
+
+    private void updateMap(String fromTo) 
+    {
+        //2:Manjri to Eon-Kharadi
+        fromTo=fromTo.substring(fromTo.indexOf(":")+1);
+        //System.out.println("fromTo="+fromTo);
+        String[] fromToArray = fromTo.split(" to ");
+//        for (String string : fromToArray) {
+//            System.out.println("string="+string);
+//            
+//        }
+        
+//        mapLabel = new Label(mapsUtil.getPlaceMap("Pune"), ContentMode.HTML);
+//        mapLayout = new VerticalLayout();
+//        mapLayout.setSizeFull();
+//        mapLayout.setMargin(true);
+        mapLayout.removeComponent(mapLabel);
+        //System.out.println("####"+fromToArray[0]+" "+fromToArray[1]);
+          mapLabel = new Label(mapsUtil.getDirectionsMap(fromToArray[0],fromToArray[1]), ContentMode.HTML);
+         // mapLabel.
+        mapLayout.addComponent(mapLabel);
+        //view.formAndMapContainer.addComponent(mapLayout);
     }
 }

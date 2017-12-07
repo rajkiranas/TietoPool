@@ -99,6 +99,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		//addItems.addClickListener(e -> addEmptyOrderItem());
 		cancel.addClickListener(e -> presenter.editBackCancelPressed());
 		ok.addClickListener(e -> presenter.okPressed());
+                route.addValueChangeListener(e -> presenter.routeSelected(e));
                 
 	}
 
@@ -189,7 +190,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
                 
 //                LocalTime startTime = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()).toLocalTime();
 //                LocalDate startDate = LocalDate.now();
-//                order.setStartTime(startTime);
+                order.setStartTime(validFrom.getValue().toLocalTime());
 //                order.setEndTime(startTime.plusHours(1));
                 
                 order.setIsActive(isActive.getValue());
