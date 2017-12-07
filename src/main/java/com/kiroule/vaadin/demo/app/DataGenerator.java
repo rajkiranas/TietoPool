@@ -138,7 +138,7 @@ public class DataGenerator implements HasLogger {
                 order.setEmail("rajkiran.sonde@tieto.com");
                 order.setEndPoint(getRandom(PLACES));
                 LocalTime startTime = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()).toLocalTime();
-                LocalDate startDate = LocalDate.now();
+                LocalDateTime startDate = LocalDateTime.now();
                 order.setEndTime(startTime.plusHours(1));
                 order.setIsActive(true);
                 order.setName("Rajkiran sonde");
@@ -147,7 +147,7 @@ public class DataGenerator implements HasLogger {
                 order.setStartPoint(getRandom(PLACES));
                 order.setStartTime(startTime);
                 order.setValidFrom(startDate);
-                order.setValidTo(startDate.plusDays(30));
+                order.setValidTo(startDate.plusDays(30).toLocalDate());
                 order.setVehicleBrand("Maruti Suzuki Baleno");
                 order.setVehicleNumber("MH20CH283");
                 order.setVehicleType(4L);

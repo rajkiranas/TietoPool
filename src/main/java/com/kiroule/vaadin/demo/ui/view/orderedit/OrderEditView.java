@@ -29,17 +29,19 @@ import com.kiroule.vaadin.demo.ui.components.ConfirmPopup;
 import com.kiroule.vaadin.demo.ui.util.DollarPriceConverter;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 @SpringView(name = "order")
 public class OrderEditView extends OrderEditViewDesign implements View {
     
-    @Autowired
-    private RouteService routeService;    
-    private List<Route> routes;
+    
 
 	public enum Mode {
-		EDIT, REPORT, CONFIRMATION;
+		VIEW_EDIT, VIEW, CREATE;
 	}
 
 	private final OrderEditPresenter presenter;
@@ -53,6 +55,9 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 	private boolean hasChanges;
 
 	private final BeanFactory beanFactory;
+        
+        @Autowired
+        private RouteService routeService;
 
 	@Autowired
 	public OrderEditView(OrderEditPresenter presenter, BeanFactory beanFactory, DollarPriceConverter priceConverter) {
@@ -94,7 +99,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		//addItems.addClickListener(e -> addEmptyOrderItem());
 		cancel.addClickListener(e -> presenter.editBackCancelPressed());
 		ok.addClickListener(e -> presenter.okPressed());
-                getAllRoutes();
+                
 	}
 
 	@Override
@@ -104,8 +109,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 			presenter.enterView(null);
 		} else {
 			presenter.enterView(Long.valueOf(orderId));
-		}
-                //route.setItems(routes);
+		}                
 	}
 
 	public void setOrder(Order order) {
@@ -113,12 +117,12 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		binder.setBean(order);
 		//productInfoContainer.removeAllComponents();
 
-		reportHeader.setVisible(order.getId() != null);
+		//reportHeader.setVisible(order.getId() != null);
 		if (order.getId() == null) {
 			addEmptyOrderItem();
 			//dueDate.focus();
 		} else {
-			orderId.setValue("#" + order.getId());
+		//	orderId.setValue("#" + order.getId());
 //			for (OrderItem item : order.getItems()) {
 //				ProductInfo productInfo = createProductInfo(item);
 //				productInfo.setReportMode(mode != Mode.EDIT);
@@ -164,7 +168,43 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 	}
 
 	protected Order getOrder() {
-		return binder.getBean();
+		//return binder.getBean();
+                Order order = new Order();
+                
+                order.setName(fullName.getValue());
+                order.setEmail(email.getValue());
+                order.setPhone(Long.parseLong(phone.getValue()));
+                
+                order.setVehicleBrand(vehicleBrand.getValue());
+                order.setVehicleNumber(vehicleNumber.getValue());
+                order.setVehicleType(4L);
+                order.setNoSeats(Integer.parseInt(noSeats.getValue()));
+                
+                order.setChargeable(chargeable.getValue());
+                order.setStartPoint(startPoint.getValue());                
+                order.setEndPoint(endPoint.getValue());
+                
+                order.setValidFrom(validFrom.getValue());
+                order.setValidTo(validTo.getValue());
+                
+//                LocalTime startTime = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()).toLocalTime();
+//                LocalDate startDate = LocalDate.now();
+//                order.setStartTime(startTime);
+//                order.setEndTime(startTime.plusHours(1));
+                
+                order.setIsActive(isActive.getValue());
+                if(!isActive.getValue())
+                {
+                    order.setInactiveStDt(inactiveStDate.getValue());
+                    order.setInactiveEndDt(inactiveEndDate.getValue());
+                }
+                
+                String routeId = route.getValue();
+                routeId=routeId.substring(0,routeId.indexOf(":"));
+                order.setRoute(routeService.findRoute(Long.parseLong(routeId)));
+                
+                
+                return order;
 	}
 
 	protected void setSum(int sum) {
@@ -184,7 +224,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		addStyleName(mode.name().toLowerCase());
 
 		this.mode = mode;
-		binder.setReadOnly(mode != Mode.EDIT);
+		binder.setReadOnly(mode != Mode.VIEW_EDIT);
 //		for (Component c : productInfoContainer) {
 //			if (c instanceof ProductInfo) {
 //				((ProductInfo) c).setReportMode(mode != Mode.EDIT);
@@ -192,20 +232,20 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 //		}
 //		addItems.setVisible(mode == Mode.EDIT);
 //		history.setVisible(mode == Mode.REPORT);
-		state.setVisible(mode == Mode.EDIT);
+		//state.setVisible(mode == Mode.VIEW_EDIT);
 
-		if (mode == Mode.REPORT) {
+		if (mode == Mode.VIEW) {
 			cancel.setCaption("Edit");
 			cancel.setIcon(VaadinIcons.EDIT);
 			//Optional<OrderState> nextState = presenter.getNextHappyPathState(getOrder().getState());
 //			ok.setCaption("Mark as " + nextState.map(OrderState::getDisplayName).orElse("?"));
 //			ok.setVisible(nextState.isPresent());
-		} else if (mode == Mode.CONFIRMATION) {
+		} else if (mode == Mode.CREATE) {
 			cancel.setCaption("Back");
 			cancel.setIcon(VaadinIcons.ANGLE_LEFT);
-			ok.setCaption("Place order");
+			//ok.setCaption("Place order");
 			ok.setVisible(true);
-		} else if (mode == Mode.EDIT) {
+		} else if (mode == Mode.VIEW_EDIT) {
 			cancel.setCaption("Cancel");
 			cancel.setIcon(VaadinIcons.CLOSE);
 			if (getOrder() != null && !getOrder().isNew()) {
@@ -256,7 +296,5 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		return hasChanges;
 	}
         
-        private void getAllRoutes() {
-        routes=routeService.getAllRoutes();
-    }
+       
 }

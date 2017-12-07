@@ -12,45 +12,45 @@
   <vaadin-vertical-layout spacing="false" margin-top="false">
    <vaadin-horizontal-layout id="formAndMapContainer" size-full _id="formAndMapContainer">
     <vaadin-css-layout style-name="order-form responsive" responsive width-full>
-     <vaadin-horizontal-layout id="reportHeader" width-full _id="reportHeader">
-      <vaadin-label style-name="h4 colored" id="orderId" plain-text _id="orderId">
-        #182 
-      </vaadin-label>
-      <vaadin-label style-name="h4 colored" id="stateLabel" width-full plain-text _id="stateLabel" :expand>
-        New pool 
-      </vaadin-label>
-      <com_vaadin_template_orders_ui_view_orderedit-order-state-select id="state" _id="state" :middle :right></com_vaadin_template_orders_ui_view_orderedit-order-state-select>
-     </vaadin-horizontal-layout>
      <vaadin-label style-name="header" width-full plain-text>
-       carpool 
+       new carpool 
      </vaadin-label>
      <vaadin-label style-name="header" width-full plain-text>
        Owner 
      </vaadin-label>
-     <vaadin-text-field style-name="half" id="name" placeholder="Firstname Lastname" width-full data-property-id="order.name" _id="fullName"></vaadin-text-field>
-     <vaadin-text-field description="Email" style-name="half" id="email" placeholder="Email" width-full data-property-id="order.email" _id="email"></vaadin-text-field>
-     <vaadin-text-field style-name="half" id="phone" placeholder="Phone number" width-full data-property-id="order.phone" _id="phone"></vaadin-text-field>
+     <vaadin-text-field style-name="half" id="name" placeholder="Firstname Lastname" width-full _id="fullName"></vaadin-text-field>
+     <vaadin-text-field description="Email" style-name="half" id="email" placeholder="Email" width-full _id="email"></vaadin-text-field>
+     <vaadin-text-field style-name="half" id="phone" placeholder="Phone number" width-full _id="phone"></vaadin-text-field>
      <vaadin-label style-name="header" width-full plain-text>
        Car Info 
      </vaadin-label>
-     <vaadin-text-field description="Car name" style-name="half" id="vehicleBrand" placeholder="Car name" width-full data-property-id="order.vehicleBrand" _id="vehicleBrand"></vaadin-text-field>
-     <vaadin-text-field description="Car number" style-name="half" id="vehicleNumber" placeholder="Car number" width-full data-property-id="order.vehicleNumber" _id="vehicleNumber"></vaadin-text-field>
-     <vaadin-text-field description="Available seats" style-name="half" id="noSeats" placeholder="Available seats" width-full data-property-id="order.noSeats" _id="noSeats"></vaadin-text-field>
+     <vaadin-text-field description="Car name" style-name="half" id="vehicleBrand" placeholder="Car name" width-full _id="vehicleBrand"></vaadin-text-field>
+     <vaadin-text-field description="Car number" style-name="half" id="vehicleNumber" placeholder="Car number" width-full _id="vehicleNumber"></vaadin-text-field>
+     <vaadin-text-field description="Available seats" style-name="half" id="noSeats" placeholder="Available seats" width-full _id="noSeats"></vaadin-text-field>
+     <vaadin-radio-button-group enabled="false" style-name="horizontal half" data-item-type="java.lang.String">
+      <option item="4" selected>4 wheeler</option>
+      <option item="2">2 wheeler</option>
+     </vaadin-radio-button-group>
      <vaadin-label style-name="header" width-full plain-text>
        Pool Info 
      </vaadin-label>
-     <vaadin-text-field style-name="half" id="startPoint" placeholder="Start point" width-full data-property-id="order.startPoint" _id="startPoint"></vaadin-text-field>
-     <vaadin-text-field style-name="half" id="endPoint" placeholder="End point" width-full data-property-id="order.endPoint" _id="endPoint"></vaadin-text-field>
-     <vaadin-combo-box empty-selection-allowed="false" style-name="half" id="route" placeholder="Route" text-input-allowed="false" width="6em" data-item-type="java.lang.String" data-property-id="order.route" _id="route"></vaadin-combo-box>
+     <vaadin-vertical-layout margin="false">
+      <vaadin-combo-box empty-selection-allowed="false" style-name="half" id="route" placeholder="Route" text-input-allowed="false" width="6em" data-item-type="java.lang.String" _id="route"></vaadin-combo-box>
+      <vaadin-horizontal-layout width-full>
+       <vaadin-text-field id="startPoint" placeholder="Start point" width-full _id="startPoint"></vaadin-text-field>
+       <vaadin-text-field id="endPoint" placeholder="End point" width-full _id="endPoint"></vaadin-text-field>
+      </vaadin-horizontal-layout>
+     </vaadin-vertical-layout>
      <vaadin-horizontal-layout width-full>
-      <vaadin-date-field lenient id="validFrom" placeholder="Start date" assistive-text="Start date of carpool" style-name="half" width-full data-property-id="order.validFrom" _id="validFrom"></vaadin-date-field>
-      <vaadin-date-field lenient id="validTo" placeholder="End date" assistive-text="End date of carpool" style-name="half" width-full data-property-id="order.validTo" _id="validTo"></vaadin-date-field>
+      <vaadin-date-time-field id="validFrom" placeholder="Start date" assistive-text="Start date" _id="validFrom"></vaadin-date-time-field>
+      <vaadin-date-field id="validTo" _id="validTo"></vaadin-date-field>
      </vaadin-horizontal-layout>
-     <vaadin-check-box caption="Is active" description="isActive" id="isActive" data-property-id="order.isActive" checked _id="isActive"></vaadin-check-box>
+     <vaadin-check-box caption="Active" description="isActive" id="isActive" checked _id="isActive"></vaadin-check-box>
      <vaadin-horizontal-layout width-full>
-      <vaadin-date-field lenient id="inactiveStDate" placeholder="Inactive start date" assistive-text="Inactive start date" style-name="half" width-full data-property-id="order.inactiveStDate" _id="inactiveStDate"></vaadin-date-field>
-      <vaadin-date-field description="Inactive end date" lenient id="inactiveEndDate" placeholder="Inactive end date" assistive-text="Inactive end date" style-name="half" width-full data-property-id="order.inactiveEndDate" _id="inactiveEndDate"></vaadin-date-field>
+      <vaadin-date-field enabled="false" lenient id="inactiveStDate" placeholder="Inactive start date" assistive-text="Inactive start date" style-name="half" width-full _id="inactiveStDate"></vaadin-date-field>
+      <vaadin-date-field description="Inactive end date" enabled="false" lenient id="inactiveEndDate" placeholder="Inactive end date" assistive-text="Inactive end date" style-name="half" width-full _id="inactiveEndDate"></vaadin-date-field>
      </vaadin-horizontal-layout>
+     <vaadin-check-box caption="CHARGEABLE" id="chargeable" _id="chargeable"></vaadin-check-box>
      <vaadin-css-layout style-name="buttons" width-full>
       <vaadin-label style-name="header" width-full plain-text></vaadin-label>
       <vaadin-button icon="fonticon://Vaadin-Icons/e7ad" style-name="cancel" id="cancel" _id="cancel">

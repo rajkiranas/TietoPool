@@ -1,6 +1,7 @@
 package com.kiroule.vaadin.demo.backend.data.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -47,7 +48,7 @@ public class Order extends AbstractEntity {
     private String vehicleBrand;
     
     @Column(name = "validFrom")    
-    private LocalDate validFrom;
+    private LocalDateTime validFrom;
     
     @Column(name = "validTo")    
     private LocalDate validTo;
@@ -135,11 +136,11 @@ public class Order extends AbstractEntity {
         this.vehicleBrand = vehicleBrand;
     }
 
-    public LocalDate getValidFrom() {
+    public LocalDateTime getValidFrom() {
         return validFrom;
     }
 
-    public void setValidFrom(LocalDate validFrom) {
+    public void setValidFrom(LocalDateTime validFrom) {
         this.validFrom = validFrom;
     }
 
@@ -257,5 +258,10 @@ public class Order extends AbstractEntity {
      */
     public void setRoute(Route route) {
         this.route = route;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" + "name=" + name + ", email=" + email + ", phone=" + phone + ", vehicleType=" + vehicleType + ", vehicleBrand=" + vehicleBrand + ", validFrom=" + validFrom + ", validTo=" + validTo + ", startPoint=" + startPoint + ", startTime=" + startTime + ", endPoint=" + endPoint + ", endTime=" + endTime + ", isActive=" + isActive + ", route=" + route + ", chargeable=" + chargeable + ", vehicleNumber=" + vehicleNumber + ", inactiveStDt=" + inactiveStDt + ", inactiveEndDt=" + inactiveEndDt + ", noSeats=" + noSeats + '}';
     }
 }

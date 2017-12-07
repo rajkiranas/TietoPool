@@ -27,8 +27,10 @@ import com.kiroule.vaadin.demo.backend.data.OrderState;
 import com.kiroule.vaadin.demo.backend.data.entity.Customer;
 import com.kiroule.vaadin.demo.backend.data.entity.Order;
 import com.kiroule.vaadin.demo.backend.data.entity.OrderItem;
+import com.kiroule.vaadin.demo.backend.data.entity.Route;
 import com.kiroule.vaadin.demo.backend.service.OrderService;
 import com.kiroule.vaadin.demo.backend.service.PickupLocationService;
+import com.kiroule.vaadin.demo.backend.service.RouteService;
 import com.kiroule.vaadin.demo.backend.service.UserService;
 import com.kiroule.vaadin.demo.ui.navigation.NavigationManager;
 import com.kiroule.vaadin.demo.ui.util.GoogleMapsUtil;
@@ -62,6 +64,10 @@ public class OrderEditPresenter implements Serializable, HasLogger {
         
         @Autowired
         private GoogleMapsUtil mapsUtil;
+        
+        @Autowired
+        private RouteService routeService;    
+        private List<Route> routes;
 
 	@Autowired
 	public OrderEditPresenter(ViewEventBus viewEventBus, NavigationManager navigationManager, OrderService orderService,
@@ -114,6 +120,8 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 //			order.setDueDate(LocalDate.now().plusDays(1));
 //			order.setDueTime(LocalTime.of(8, 00));
 //			order.setPickupLocation(pickupLocationService.getDefault());
+                        view.setMode(Mode.CREATE);
+                        getRoutesInformation();
                         addPlacesMapToTheView();
 		} else {
 			order = orderService.findOrder(id);
@@ -121,9 +129,8 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 				view.showNotFound();
 				return;
 			}
+                        refreshView(order);
 		}
-
-		refreshView(order);
 	}
 
 	private void updateTotalSum() {
@@ -133,13 +140,13 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 	}
 
 	public void editBackCancelPressed() {
-		if (view.getMode() == Mode.REPORT) {
+		if (view.getMode() == Mode.VIEW) {
 			// Edit order
-			view.setMode(Mode.EDIT);
-		} else if (view.getMode() == Mode.CONFIRMATION) {
+			view.setMode(Mode.VIEW_EDIT);
+		} else if (view.getMode() == Mode.CREATE) {
 			// Back to edit
-			view.setMode(Mode.EDIT);
-		} else if (view.getMode() == Mode.EDIT) {
+			view.setMode(Mode.VIEW_EDIT);
+		} else if (view.getMode() == Mode.VIEW_EDIT) {
 			// Cancel edit
 			Long id = view.getOrder().getId();
 			if (id == null) {
@@ -152,7 +159,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 
 	public void okPressed() {
             System.out.println("*****####");
-		if (view.getMode() == Mode.REPORT) {
+		if (view.getMode() == Mode.VIEW) {
 			// Set next state
 			Order order = view.getOrder();
 			//Optional<OrderState> nextState = getNextHappyPathState(order.getState());
@@ -163,14 +170,16 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 			}
 			//orderService.changeState(order, nextState.get(), SecurityUtils.getCurrentUser(userService));
 			refresh(order.getId());
-		} else if (view.getMode() == Mode.CONFIRMATION) {
+		} else if (view.getMode() == Mode.CREATE) {
+                                    
 			Order order = saveOrder();
 			if (order != null) {
 				// Navigate to edit view so URL is updated correctly
-				navigationManager.updateViewParameter("" + order.getId());
-				enterView(order.getId());
+				navigationManager.navigateTo(StorefrontView.class);
+                                //updateViewParameter("" + order.getId());
+				//enterView(order.getId());
 			}
-		} else if (view.getMode() == Mode.EDIT) {
+		} else if (view.getMode() == Mode.VIEW_EDIT) {
 			Optional<HasValue<?>> firstErrorField = view.validate().findFirst();
 			if (firstErrorField.isPresent()) {
 				((Focusable) firstErrorField.get()).focus();
@@ -180,7 +189,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 			Order order = view.getOrder();
 			if (order.getId() == null) {
 				filterEmptyProducts();
-				view.setMode(Mode.CONFIRMATION);
+				view.setMode(Mode.CREATE);
 			} else {
 				order = saveOrder();
 				if (order != null) {
@@ -189,7 +198,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 			}
 		}
                 
-                   createPool();
+                   
                 
 	}
 
@@ -207,9 +216,9 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 		view.setOrder(order);
 		updateTotalSum();
 		if (order.getId() == null) {
-			view.setMode(Mode.EDIT);
+			view.setMode(Mode.VIEW_EDIT);
 		} else {
-			view.setMode(Mode.REPORT);
+			view.setMode(Mode.VIEW);
 		}
 	}
 
@@ -225,8 +234,9 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 
 	private Order saveOrder() {
 		try {
-			filterEmptyProducts();
+			//filterEmptyProducts();
 			Order order = view.getOrder();
+                        System.out.println("order="+order);
 			return orderService.saveOrder(order, SecurityUtils.getCurrentUser(userService));
 		} catch (ValidationException e) {
 			// Should not get here if validation is setup properly
@@ -272,5 +282,14 @@ public class OrderEditPresenter implements Serializable, HasLogger {
                         mapLayout.setMargin(true);
                         mapLayout.addComponent(placeMap);
                         view.formAndMapContainer.addComponent(mapLayout);
+    }
+    
+     private void getRoutesInformation() {
+        routes=routeService.getAllRoutes();
+        List<String> stringRoutes = new ArrayList<String>();
+         for (Route r : routes) {
+             stringRoutes.add(r.getId()+":"+r.getSource()+" to "+r.getDestination());
+         }
+         view.route.setItems(stringRoutes);        
     }
 }
