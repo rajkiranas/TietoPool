@@ -47,6 +47,7 @@ public class DataGenerator implements HasLogger {
 			"Mcbride", "Leblanc", "Russell", "Carver", "Benton", "Maldonado", "Lyons" };
         private static final String[] PLACES = new String[] { "Kothrud", "Shivaji Nagar", "Baner", "EON",
 			"Kharadi","Chandani Choowk","Pashan", "SB Road","Hadapsar"};
+        private static final Long[] ROUTES = new Long[] { 1L,2L,3L,4L,5L,6L,7L,8L,9L,10L};
 
 	private final Random random = new Random(1L);
 
@@ -54,6 +55,7 @@ public class DataGenerator implements HasLogger {
 	private final List<Product> products = new ArrayList<>();
 	private User baker;
 	private User barista;
+        private boolean shuffleDate=false;
 
 	@Bean
 	public CommandLineRunner loadData(OrderRepository orderRepository, UserRepository userRepository,
@@ -138,16 +140,30 @@ public class DataGenerator implements HasLogger {
                 order.setEmail("rajkiran.sonde@tieto.com");
                 order.setEndPoint(getRandom(PLACES));
                 LocalTime startTime = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()).toLocalTime();
-                LocalDateTime startDate = LocalDateTime.now();
+                order.setStartTime(startTime);
                 order.setEndTime(startTime.plusHours(1));
                 order.setIsActive(true);
                 order.setName("Rajkiran sonde");
                 order.setPhone(9881409240L);                
-                order.setRoute(routeService.findRoute(1L));
+                order.setRoute(routeService.findRoute(getRandom(ROUTES)));
                 order.setStartPoint(getRandom(PLACES));
-                order.setStartTime(startTime);
-                order.setValidFrom(startDate);
-                order.setValidTo(startDate.plusDays(30).toLocalDate());
+                
+                if(shuffleDate)
+                {
+                    LocalDateTime startDate = LocalDateTime.now();                
+                    order.setValidFrom(startDate);
+                    order.setValidTo(startDate.plusDays(0).toLocalDate());
+                    shuffleDate=false;
+                }
+                else
+                {
+                    LocalDateTime startDate = LocalDateTime.now();                
+                    startDate=startDate.minusDays(20);
+                    order.setValidFrom(startDate);
+                    order.setValidTo(startDate.plusDays(5).toLocalDate());                    
+                    shuffleDate=true;
+                }
+                
                 order.setVehicleBrand("Maruti Suzuki Baleno");
                 order.setVehicleNumber("MH20CH283");
                 order.setVehicleType(4L);

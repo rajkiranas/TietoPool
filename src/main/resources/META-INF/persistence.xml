@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="com.tieto.car.pool_TietoPool_war_1.0PU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>com.kiroule.vaadin.demo.backend.data.poolentity.CarPoolOwn</class>
+    <class>com.kiroule.vaadin.demo.backend.data.poolentity.CarPoolLog</class>
+    <class>com.kiroule.vaadin.demo.backend.data.poolentity.CarPoolUser</class>
+    <class>com.kiroule.vaadin.demo.backend.data.poolentity.CarPoolRoute</class>
+    <class>com.kiroule.vaadin.demo.backend.data.poolentity.Subscriptions</class>
+    <class>com.kiroule.vaadin.demo.backend.data.poolentity.UserInfo</class>
+    <class>com.kiroule.vaadin.demo.backend.data.poolentity.Listing</class>
+    <class>com.kiroule.vaadin.demo.backend.data.poolentity.Route</class>
+    <class>com.kiroule.vaadin.demo.backend.data.entity.User</class>
+    <class>com.kiroule.vaadin.demo.backend.data.entity.Listing</class>
+    <class>com.kiroule.vaadin.demo.backend.data.entity.Route</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://10.83.8.191:3306/tietopool?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.user" value="test"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="test"/>
+    </properties>
+  </persistence-unit>
+</persistence>

@@ -106,8 +106,9 @@ public class OrderService {
 				return orderRepository.findByNameContainingIgnoreCase(optionalFilter.get(), pageable);
 			}
 		} else {
-			if (optionalFilterDate.isPresent()) {
-				return orderRepository.findByValidToAfter(optionalFilterDate.get(), pageable);
+                    //rajkiran 
+			if (true) {
+				return orderRepository.findByValidToGreaterThanEqual(LocalDate.now(), pageable);
 			} else {
 				return orderRepository.findAll(pageable);
 			}

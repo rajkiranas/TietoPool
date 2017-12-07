@@ -43,7 +43,7 @@ public class OrdersGrid extends Grid<Order> {
 
 		// Summary column
 		Column<Order, String> summaryColumn = addColumn(order -> {
-			String fromTo=order.getStartPoint()+" to "+ order.getEndPoint();
+			String fromTo=order.getRoute().getSource()+" to "+ order.getRoute().getDestination();
 			return threeRowCell(fromTo, getListingSummary(order), order);
 		}, new HtmlRenderer()).setExpandRatio(1).setSortProperty("fromTo").setMinimumWidthFromContent(false);
 		summaryColumn.setStyleGenerator(order -> "summary");
@@ -108,6 +108,7 @@ public class OrdersGrid extends Grid<Order> {
                 return order.getName()+"|"
                         +order.getVehicleBrand()+"|"
                         +order.getVehicleNumber()+"|"
+                        +"Start point:"+order.getStartPoint()+"|"
                         +"Start time:"+order.getStartTime()+"|"
                         +"Available seats:"+order.getNoSeats();
 	}

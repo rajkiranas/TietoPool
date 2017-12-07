@@ -21,7 +21,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	Order findOne(Long id);
 
 	@EntityGraph(value = "Order.gridData", type = EntityGraphType.LOAD)
-	Page<Order> findByValidToAfter(LocalDate filterDate, Pageable pageable);
+	Page<Order> findByValidToGreaterThanEqual(LocalDate filterDate, Pageable pageable);
 
 	@Override
 	@EntityGraph(value = "Order.gridData", type = EntityGraphType.LOAD)
