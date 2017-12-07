@@ -31,11 +31,16 @@ import com.kiroule.vaadin.demo.backend.service.OrderService;
 import com.kiroule.vaadin.demo.backend.service.PickupLocationService;
 import com.kiroule.vaadin.demo.backend.service.UserService;
 import com.kiroule.vaadin.demo.ui.navigation.NavigationManager;
+import com.kiroule.vaadin.demo.ui.util.GoogleMapsUtil;
 import com.kiroule.vaadin.demo.ui.view.orderedit.OrderEditView.Mode;
 import com.kiroule.vaadin.demo.ui.view.storefront.StorefrontView;
+import com.vaadin.server.AbstractErrorMessage;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Component.Focusable;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.VerticalLayout;
 
 @SpringComponent
 @ViewScope
@@ -54,6 +59,9 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 
 	private static final List<OrderState> happyPath = Arrays.asList(OrderState.NEW, OrderState.CONFIRMED,
 			OrderState.READY, OrderState.DELIVERED);
+        
+        @Autowired
+        private GoogleMapsUtil mapsUtil;
 
 	@Autowired
 	public OrderEditPresenter(ViewEventBus viewEventBus, NavigationManager navigationManager, OrderService orderService,
@@ -106,6 +114,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 //			order.setDueDate(LocalDate.now().plusDays(1));
 //			order.setDueTime(LocalTime.of(8, 00));
 //			order.setPickupLocation(pickupLocationService.getDefault());
+                        addPlacesMapToTheView();
 		} else {
 			order = orderService.findOrder(id);
 			if (order == null) {
@@ -142,6 +151,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 	}
 
 	public void okPressed() {
+            System.out.println("*****####");
 		if (view.getMode() == Mode.REPORT) {
 			// Set next state
 			Order order = view.getOrder();
@@ -178,6 +188,9 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 				}
 			}
 		}
+                
+                   createPool();
+                
 	}
 
 	private void refresh(Long id) {
@@ -247,4 +260,17 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 		view.removeOrderItem(orderItem);
 		updateTotalSum();
 	}
+
+    private void createPool() {
+        System.out.println("***"+view.email.getValue());
+    }
+
+    private void addPlacesMapToTheView() {
+        Label placeMap=new Label(mapsUtil.getPlaceMap("Pune"),ContentMode.HTML);
+                        VerticalLayout mapLayout = new VerticalLayout();
+                        mapLayout.setSizeFull();
+                        mapLayout.setMargin(true);
+                        mapLayout.addComponent(placeMap);
+                        view.formAndMapContainer.addComponent(mapLayout);
+    }
 }

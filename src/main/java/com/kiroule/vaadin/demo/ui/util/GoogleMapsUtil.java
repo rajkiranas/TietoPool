@@ -49,7 +49,7 @@ public class GoogleMapsUtil
     
     private String getPlainIframe()
     {
-        String iframe="<iframe width=\"450\" height=\"250\" frameborder=\"0\" style=\"border:0\" src=\"SRC_PLACEHOLDER\" allowfullscreen> </iframe>";
+        String iframe="<iframe width=\"650\" height=\"400\" frameborder=\"0\" style=\"border:0\" src=\"SRC_PLACEHOLDER\" allowfullscreen> </iframe>";
         
         return iframe;
         

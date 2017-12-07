@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.kiroule.vaadin.demo.backend.data.entity.Order;
 import com.kiroule.vaadin.demo.backend.data.entity.Route;
+import java.util.List;
 
 public interface RouteRepository extends JpaRepository<Route, Long> {
 
@@ -15,7 +16,7 @@ public interface RouteRepository extends JpaRepository<Route, Long> {
 	@EntityGraph(value = "Route.getRouteData", type = EntityGraphType.LOAD)
 	Route findOne(Long id);
 
-//	@Override
-//	@EntityGraph(value = "Route.getAllRoutes", type = EntityGraphType.LOAD)
-//	Page<Route> findAll(Pageable pageable);
+	@Override
+	//@EntityGraph(value = "Route.getAllRoutes", type = EntityGraphType.LOAD)
+	List<Route> findAll();
 }

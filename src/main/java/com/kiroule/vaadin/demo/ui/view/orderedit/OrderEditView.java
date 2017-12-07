@@ -23,13 +23,20 @@ import com.vaadin.spring.annotation.SpringView;
 import com.kiroule.vaadin.demo.backend.data.OrderState;
 import com.kiroule.vaadin.demo.backend.data.entity.Order;
 import com.kiroule.vaadin.demo.backend.data.entity.OrderItem;
+import com.kiroule.vaadin.demo.backend.data.entity.Route;
+import com.kiroule.vaadin.demo.backend.service.RouteService;
 import com.kiroule.vaadin.demo.ui.components.ConfirmPopup;
 import com.kiroule.vaadin.demo.ui.util.DollarPriceConverter;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import java.util.List;
 
 @SpringView(name = "order")
 public class OrderEditView extends OrderEditViewDesign implements View {
+    
+    @Autowired
+    private RouteService routeService;    
+    private List<Route> routes;
 
 	public enum Mode {
 		EDIT, REPORT, CONFIRMATION;
@@ -59,7 +66,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		presenter.init(this);
 
 		// We're limiting dueTime to even hours between 07:00 and 17:00
-		dueTime.setItems(IntStream.range(7, 17).mapToObj(h -> LocalTime.of(h, 0)));
+		//dueTime.setItems(IntStream.range(7, 17).mapToObj(h -> LocalTime.of(h, 0)));
 
 		// Binder takes care of binding Vaadin fields defined as Java member
 		// fields in this class to properties in the Order bean
@@ -73,20 +80,21 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		// report validation errors for the first invalid field and it is most
 		// intuitive for the user that we start from the top if there are
 		// multiple errors.
-		binder.bindInstanceFields(this);
+		//binder.bindInstanceFields(this);
 
 		// Must bind sub properties manually until
 		// https://github.com/vaadin/framework/issues/9210 is fixed
-		binder.bind(fullName, "customer.fullName");
-		binder.bind(phone, "customer.phoneNumber");
-		binder.bind(details, "customer.details");
+//		binder.bind(fullName, "customer.fullName");
+//		binder.bind(phone, "customer.phoneNumber");
+		//binder.bind(details, "customer.details");
 
 		// Track changes manually as we use setBean and nested binders
-		binder.addValueChangeListener(e -> hasChanges = true);
+		//binder.addValueChangeListener(e -> hasChanges = true);
 
-		addItems.addClickListener(e -> addEmptyOrderItem());
+		//addItems.addClickListener(e -> addEmptyOrderItem());
 		cancel.addClickListener(e -> presenter.editBackCancelPressed());
 		ok.addClickListener(e -> presenter.okPressed());
+                getAllRoutes();
 	}
 
 	@Override
@@ -97,17 +105,18 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		} else {
 			presenter.enterView(Long.valueOf(orderId));
 		}
+                //route.setItems(routes);
 	}
 
 	public void setOrder(Order order) {
 		//stateLabel.setValue(order.getState().getDisplayName());
 		binder.setBean(order);
-		productInfoContainer.removeAllComponents();
+		//productInfoContainer.removeAllComponents();
 
 		reportHeader.setVisible(order.getId() != null);
 		if (order.getId() == null) {
 			addEmptyOrderItem();
-			dueDate.focus();
+			//dueDate.focus();
 		} else {
 			orderId.setValue("#" + order.getId());
 //			for (OrderItem item : order.getItems()) {
@@ -115,7 +124,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 //				productInfo.setReportMode(mode != Mode.EDIT);
 //				productInfoContainer.addComponent(productInfo);
 //			}
-			history.setOrder(order);
+			//history.setOrder(order);
 		}
 		hasChanges = false;
 	}
@@ -123,7 +132,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 	private void addEmptyOrderItem() {
 		OrderItem orderItem = new OrderItem();
 		ProductInfo productInfo = createProductInfo(orderItem);
-		productInfoContainer.addComponent(productInfo);
+		//productInfoContainer.addComponent(productInfo);
 		productInfo.focus();
 		//getOrder().getItems().add(orderItem);
 	}
@@ -131,12 +140,12 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 	protected void removeOrderItem(OrderItem orderItem) {
 		//getOrder().getItems().remove(orderItem);
 
-		for (Component c : productInfoContainer) {
-			if (c instanceof ProductInfo && ((ProductInfo) c).getItem() == orderItem) {
-				productInfoContainer.removeComponent(c);
-				break;
-			}
-		}
+//		for (Component c : productInfoContainer) {
+//			if (c instanceof ProductInfo && ((ProductInfo) c).getItem() == orderItem) {
+//				productInfoContainer.removeComponent(c);
+//				break;
+//			}
+//		}
 	}
 
 	/**
@@ -159,7 +168,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 	}
 
 	protected void setSum(int sum) {
-		total.setValue(priceConverter.convertToPresentation(sum, new ValueContext(Locale.US)));
+		//total.setValue(priceConverter.convertToPresentation(sum, new ValueContext(Locale.US)));
 	}
 
 	public void showNotFound() {
@@ -176,13 +185,13 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 
 		this.mode = mode;
 		binder.setReadOnly(mode != Mode.EDIT);
-		for (Component c : productInfoContainer) {
-			if (c instanceof ProductInfo) {
-				((ProductInfo) c).setReportMode(mode != Mode.EDIT);
-			}
-		}
-		addItems.setVisible(mode == Mode.EDIT);
-		history.setVisible(mode == Mode.REPORT);
+//		for (Component c : productInfoContainer) {
+//			if (c instanceof ProductInfo) {
+//				((ProductInfo) c).setReportMode(mode != Mode.EDIT);
+//			}
+//		}
+//		addItems.setVisible(mode == Mode.EDIT);
+//		history.setVisible(mode == Mode.REPORT);
 		state.setVisible(mode == Mode.EDIT);
 
 		if (mode == Mode.REPORT) {
@@ -218,14 +227,14 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		Stream<HasValue<?>> errorFields = binder.validate().getFieldValidationErrors().stream()
 				.map(BindingValidationStatus::getField);
 
-		for (Component c : productInfoContainer) {
-			if (c instanceof ProductInfo) {
-				ProductInfo productInfo = (ProductInfo) c;
-				if (!productInfo.isEmpty()) {
-					errorFields = Stream.concat(errorFields, productInfo.validate());
-				}
-			}
-		}
+//		for (Component c : productInfoContainer) {
+//			if (c instanceof ProductInfo) {
+//				ProductInfo productInfo = (ProductInfo) c;
+//				if (!productInfo.isEmpty()) {
+//					errorFields = Stream.concat(errorFields, productInfo.validate());
+//				}
+//			}
+//		}
 		return errorFields;
 	}
 
@@ -246,4 +255,8 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 	public boolean containsUnsavedChanges() {
 		return hasChanges;
 	}
+        
+        private void getAllRoutes() {
+        routes=routeService.getAllRoutes();
+    }
 }

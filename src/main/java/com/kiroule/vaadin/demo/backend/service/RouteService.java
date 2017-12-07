@@ -43,6 +43,10 @@ public class RouteService {
 	public Route findRoute(Long id) {
 		return routeRepository.findOne(id);
 	}
+        
+        public List<Route> getAllRoutes() {
+		return routeRepository.findAll();
+	}
 
 
 }
