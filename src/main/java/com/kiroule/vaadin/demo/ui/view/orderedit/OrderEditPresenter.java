@@ -114,7 +114,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 
 	@EventBusListenerMethod
 	private void onOrderItemUpdate(OrderUpdatedEvent event) {
-		refresh(view.getOrder().getId());
+		refresh(view.getOrder().getId(null));
 	}
 
 	void init(OrderEditView view) {
