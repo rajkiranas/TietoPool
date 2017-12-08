@@ -36,7 +36,7 @@ public class OrdersGrid extends Grid<Order> {
 
 		// Due column
 		Column<Order, String> dueColumn = addColumn(
-				order -> threeRowCell(getTimeHeader(), String.valueOf(order.getValidFrom()),String.valueOf(order.getValidTo())),
+				order -> threeRowCell(getTimeHeader(), String.valueOf(order.getValidFrom().toLocalDate()),String.valueOf(order.getValidTo())),
 				new HtmlRenderer());
 		dueColumn.setSortProperty("validFrom", "validTo");
 		dueColumn.setStyleGenerator(order -> "due");

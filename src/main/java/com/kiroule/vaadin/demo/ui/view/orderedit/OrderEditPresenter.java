@@ -28,6 +28,7 @@ import com.kiroule.vaadin.demo.backend.data.entity.Customer;
 import com.kiroule.vaadin.demo.backend.data.entity.Order;
 import com.kiroule.vaadin.demo.backend.data.entity.OrderItem;
 import com.kiroule.vaadin.demo.backend.data.entity.Route;
+import com.kiroule.vaadin.demo.backend.data.entity.User;
 import com.kiroule.vaadin.demo.backend.service.OrderService;
 import com.kiroule.vaadin.demo.backend.service.PickupLocationService;
 import com.kiroule.vaadin.demo.backend.service.RouteService;
@@ -115,6 +116,9 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 	 */
 	public void enterView(Long id) {
 		Order order;
+                getRoutesInformation();
+                addPlacesMapToTheView();
+                        
 		if (id == null) {
 			// New
 			order = new Order();
@@ -125,15 +129,26 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 //			order.setDueTime(LocalTime.of(8, 00));
 //			order.setPickupLocation(pickupLocationService.getDefault());
                         view.setMode(Mode.CREATE);
-                        getRoutesInformation();
-                        addPlacesMapToTheView();
-		} else {
+                        
+		} else 
+                {
+                    User user = SecurityUtils.getCurrentUser(userService);
 			order = orderService.findOrder(id);
-			if (order == null) {
-				view.showNotFound();
-				return;
-			}
-                        refreshView(order);
+                        
+                        if(user.getEmail().equalsIgnoreCase(order.getEmail()))
+                        {
+                            view.setMode(Mode.VIEW_EDIT);
+                            //navigate to mypool view
+                        }
+                        else
+                        {
+                            view.setMode(Mode.VIEW);                            
+                            refreshView(order);
+                        }
+//			if (order == null) {
+//				view.showNotFound();
+//				return;
+//			}                        
 		}
 	}
 
@@ -144,22 +159,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 	}
 
 	public void editBackCancelPressed() {
-		if (view.getMode() == Mode.VIEW) {
-			// Edit order
-			view.setMode(Mode.VIEW_EDIT);
-		} else if (view.getMode() == Mode.CREATE) {
-			// Back to edit
-			//view.setMode(Mode.VIEW_EDIT);
-                        navigationManager.navigateTo(StorefrontView.class);
-		} else if (view.getMode() == Mode.VIEW_EDIT) {
-			// Cancel edit
-			Long id = view.getOrder().getId();
-			if (id == null) {
-				navigationManager.navigateTo(StorefrontView.class);
-			} else {
-				enterView(id);
-			}
-		}
+		navigationManager.navigateTo(StorefrontView.class);
 	}
 
 	public void okPressed() {
@@ -220,11 +220,11 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 	private void refreshView(Order order) {
 		view.setOrder(order);
 		updateTotalSum();
-		if (order.getId() == null) {
-			view.setMode(Mode.VIEW_EDIT);
-		} else {
-			view.setMode(Mode.VIEW);
-		}
+//		if (order.getId() == null) {
+//			view.setMode(Mode.VIEW_EDIT);
+//		} else {
+//			view.setMode(Mode.VIEW);
+//		}
 	}
 
 	private void filterEmptyProducts() {

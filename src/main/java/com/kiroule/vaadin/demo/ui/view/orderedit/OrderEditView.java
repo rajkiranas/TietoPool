@@ -37,6 +37,56 @@ import java.util.List;
 
 @SpringView(name = "order")
 public class OrderEditView extends OrderEditViewDesign implements View {
+
+    private void lockTheFormFields() {
+                fullName.setEnabled(false);
+                email.setEnabled(false);
+                phone.setEnabled(false);
+                
+                vehicleBrand.setEnabled(false);
+                vehicleNumber.setEnabled(false);
+                //not handled, only shown currently
+                //vehicleType.setValue(4L);
+                noSeats.setEnabled(false);
+                
+                chargeable.setEnabled(false);
+                startPoint.setEnabled(false);
+                endPoint.setEnabled(false);
+                
+                validFrom.setEnabled(false);
+                validTo.setEnabled(false);                
+                
+                inactive.setEnabled(false);                
+                
+                    inactiveStDate.setEnabled(false);
+                    inactiveEndDate.setEnabled(false);
+                route.setEnabled(false);
+    }
+    
+    private void enableFormFields() {
+                fullName.setEnabled(true);
+                email.setEnabled(true);
+                phone.setEnabled(true);
+                
+                vehicleBrand.setEnabled(true);
+                vehicleNumber.setEnabled(true);
+                //not handled, only shown currently
+                //vehicleType.setValue(4L);
+                noSeats.setEnabled(true);
+                
+                chargeable.setEnabled(true);
+                startPoint.setEnabled(true);
+                endPoint.setEnabled(true);
+                
+                validFrom.setEnabled(true);
+                validTo.setEnabled(true);                
+                
+                inactive.setEnabled(true);                
+                
+                    inactiveStDate.setEnabled(true);
+                    inactiveEndDate.setEnabled(true);
+                route.setEnabled(true);
+    }
     
     
 
@@ -107,8 +157,9 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 		String orderId = event.getParameters();
+                System.out.println("orderIdorderIdorderId="+orderId);
 		if ("".equals(orderId)) {
-			presenter.enterView(null);
+			presenter.enterView(null);                        
 		} else {
 			presenter.enterView(Long.valueOf(orderId));
 		}                
@@ -116,23 +167,48 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 
 	public void setOrder(Order order) {
 		//stateLabel.setValue(order.getState().getDisplayName());
-		binder.setBean(order);
-		//productInfoContainer.removeAllComponents();
+		
+		fullName.setValue(order.getName());
+                email.setValue(order.getEmail());
+                phone.setValue(String.valueOf(order.getPhone()));
+                
+                vehicleBrand.setValue(order.getVehicleBrand());
+                vehicleNumber.setValue(order.getVehicleNumber());
+                //not handled, only shown currently
+                //vehicleType.setValue(4L);
+                noSeats.setValue(String.valueOf(order.getNoSeats()));
+                
+                chargeable.setValue(order.getChargeable());
+                startPoint.setValue(order.getStartPoint());                
+                endPoint.setValue(order.getEndPoint());
+                
+                validFrom.setValue(order.getValidFrom());
+                validTo.setValue(order.getValidTo());
+                
+//                LocalTime startTime = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()).toLocalTime();
+//                LocalDate startDate = LocalDate.now();
 
-		//reportHeader.setVisible(order.getId() != null);
-		if (order.getId() == null) {
-			addEmptyOrderItem();
-			//dueDate.focus();
-		} else {
-		//	orderId.setValue("#" + order.getId());
-//			for (OrderItem item : order.getItems()) {
-//				ProductInfo productInfo = createProductInfo(item);
-//				productInfo.setReportMode(mode != Mode.EDIT);
-//				productInfoContainer.addComponent(productInfo);
-//			}
-			//history.setOrder(order);
-		}
-		hasChanges = false;
+                //not required, handled in validFrom
+                //order.setStartTime(validFrom.getValue().toLocalTime());
+//                order.setEndTime(startTime.plusHours(1));
+                
+                inactive.setValue(!order.getIsActive());
+                
+                if(inactive.getValue())
+                {
+                    inactiveStDate.setValue(order.getInactiveStDt());
+                    inactiveEndDate.setValue(order.getInactiveEndDt());
+                }
+                
+                
+                route.setSelectedItem(order.getRoute().getId()+":"+order.getRoute().getSource()+"-to-"+order.getRoute().getDestination());
+                
+                
+                 ok.setCaption("Subscribe");
+                 
+                 lockTheFormFields();
+		
+		//hasChanges = false;
 	}
 
 	private void addEmptyOrderItem() {
@@ -238,8 +314,8 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		//state.setVisible(mode == Mode.VIEW_EDIT);
 
 		if (mode == Mode.VIEW) {
-			cancel.setCaption("Edit");
-			cancel.setIcon(VaadinIcons.EDIT);
+//			cancel.setCaption("Edit");
+//			cancel.setIcon(VaadinIcons.EDIT);
 			//Optional<OrderState> nextState = presenter.getNextHappyPathState(getOrder().getState());
 //			ok.setCaption("Mark as " + nextState.map(OrderState::getDisplayName).orElse("?"));
 //			ok.setVisible(nextState.isPresent());
