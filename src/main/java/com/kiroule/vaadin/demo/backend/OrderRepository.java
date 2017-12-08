@@ -17,7 +17,7 @@ import com.kiroule.vaadin.demo.backend.data.entity.Order;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
 	@Override
-	@EntityGraph(value = "Order.allData", type = EntityGraphType.LOAD)
+	@EntityGraph(value = "Order.gridData", type = EntityGraphType.LOAD)
 	Order findOne(Long id);
 
 	@EntityGraph(value = "Order.gridData", type = EntityGraphType.LOAD)
@@ -59,5 +59,14 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 //
 //	@Query("SELECT sum(oi.quantity),p FROM OrderInfo o JOIN o.items oi JOIN oi.product p WHERE o.state=?1 AND year(o.dueDate)=?2 AND month(o.dueDate)=?3 GROUP BY p.id ORDER BY p.id")
 //	List<Object[]> countPerProduct(OrderState orderState, int year, int month);
+        
+        
+//        @Query("select l.name,r.source,r.destination,r.via from listing l , route r where l.route_id = r.id \n" +
+//"and (upper(l.name) like upper('%sa%') or upper(r.source) like upper('%sa%')\n" +
+//"or upper(r.destination) like upper('%sa%') or upper(r.via) like upper('%sa%'))\n" +
+//"and sysdate() between valid_from and valid_to \n" +
+//"and is_active = 1 ")
+//	List<Object[]> sumPerMonthLastThreeYears(OrderState orderState, int year);
+        
 
 }

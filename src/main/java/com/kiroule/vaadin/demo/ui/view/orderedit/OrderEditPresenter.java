@@ -28,10 +28,12 @@ import com.kiroule.vaadin.demo.backend.data.entity.Customer;
 import com.kiroule.vaadin.demo.backend.data.entity.Order;
 import com.kiroule.vaadin.demo.backend.data.entity.OrderItem;
 import com.kiroule.vaadin.demo.backend.data.entity.Route;
+import com.kiroule.vaadin.demo.backend.data.entity.Subscriptions;
 import com.kiroule.vaadin.demo.backend.data.entity.User;
 import com.kiroule.vaadin.demo.backend.service.OrderService;
 import com.kiroule.vaadin.demo.backend.service.PickupLocationService;
 import com.kiroule.vaadin.demo.backend.service.RouteService;
+import com.kiroule.vaadin.demo.backend.service.SubscriptionsService;
 import com.kiroule.vaadin.demo.backend.service.UserService;
 import com.kiroule.vaadin.demo.ui.navigation.NavigationManager;
 import com.kiroule.vaadin.demo.ui.util.GoogleMapsUtil;
@@ -39,13 +41,18 @@ import com.kiroule.vaadin.demo.ui.view.orderedit.OrderEditView.Mode;
 import com.kiroule.vaadin.demo.ui.view.storefront.StorefrontView;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.server.AbstractErrorMessage;
+import com.vaadin.server.Page;
 import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component.Focusable;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.VerticalLayout;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @SpringComponent
 @ViewScope
@@ -73,6 +80,9 @@ public class OrderEditPresenter implements Serializable, HasLogger {
         private List<Route> routes;
         private VerticalLayout mapLayout;
         private Label mapLabel;
+        
+        @Autowired
+        private SubscriptionsService subscriptionsService;
 
 	@Autowired
 	public OrderEditPresenter(ViewEventBus viewEventBus, NavigationManager navigationManager, OrderService orderService,
@@ -121,13 +131,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
                         
 		if (id == null) {
 			// New
-			order = new Order();
-//			order.setState(OrderState.NEW);
-//			order.setItems(new ArrayList<>());
-//			order.setCustomer(new Customer());
-//			order.setDueDate(LocalDate.now().plusDays(1));
-//			order.setDueTime(LocalTime.of(8, 00));
-//			order.setPickupLocation(pickupLocationService.getDefault());
+			order = new Order();//			
                         view.setMode(Mode.CREATE);
                         
 		} else 
@@ -137,11 +141,13 @@ public class OrderEditPresenter implements Serializable, HasLogger {
                         
                         if(user.getEmail().equalsIgnoreCase(order.getEmail()))
                         {
+                            //admin
                             view.setMode(Mode.VIEW_EDIT);
-                            //navigate to mypool view
+                            refreshViewAdmin(order);
                         }
                         else
                         {
+                            //other users for suscribing
                             view.setMode(Mode.VIEW);                            
                             refreshView(order);
                         }
@@ -162,44 +168,29 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 		navigationManager.navigateTo(StorefrontView.class);
 	}
 
-	public void okPressed() {
+	public void okPressed(ClickEvent e) {
             System.out.println("*****####");
 		if (view.getMode() == Mode.VIEW) {
 			// Set next state
-			Order order = view.getOrder();
-			//Optional<OrderState> nextState = getNextHappyPathState(order.getState());
-                        Optional<OrderState> nextState = null;
-			if (!nextState.isPresent()) {
-				throw new IllegalStateException(
-						"The next state button should never be enabled when the state does not follow the happy path");
-			}
-			//orderService.changeState(order, nextState.get(), SecurityUtils.getCurrentUser(userService));
-			refresh(order.getId());
-		} else if (view.getMode() == Mode.CREATE) {
+			Order order = view.getOrderBeingSubscribed();
+			saveSubscription(order,e.getButton().getCaption());                        
+                        new Notification("Subscription request successfully sent to the "+order.getName(),"", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());//                      
+                        navigationManager.navigateTo(StorefrontView.class);
+		
+                } else if (view.getMode() == Mode.CREATE) {
                                     
-			Order order = saveOrder();
+			Order order = saveOrder(null);
 			if (order != null) {
 				// Navigate to edit view so URL is updated correctly
-				navigationManager.navigateTo(StorefrontView.class);
-                                //updateViewParameter("" + order.getId());
-				//enterView(order.getId());
+                                new Notification("Carpool successfully created","", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());//                      
+				navigationManager.navigateTo(StorefrontView.class);                                
 			}
 		} else if (view.getMode() == Mode.VIEW_EDIT) {
-			Optional<HasValue<?>> firstErrorField = view.validate().findFirst();
-			if (firstErrorField.isPresent()) {
-				((Focusable) firstErrorField.get()).focus();
-				return;
-			}
-			// New order should still show a confirmation page
-			Order order = view.getOrder();
-			if (order.getId() == null) {
-				filterEmptyProducts();
-				view.setMode(Mode.CREATE);
-			} else {
-				order = saveOrder();
-				if (order != null) {
-					refresh(order.getId());
-				}
+			Order order = saveOrder(view.getOrderBeingSubscribed());
+			if (order != null) {
+				// Navigate to edit view so URL is updated correctly
+                                new Notification("Carpool successfully updated","", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());//                      
+				navigationManager.navigateTo(StorefrontView.class);                                
 			}
 		}
                 
@@ -219,7 +210,20 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 
 	private void refreshView(Order order) {
 		view.setOrder(order);
+                view.modifyButtonsForView();
+                view.lockTheFormFields();
 		updateTotalSum();
+//		if (order.getId() == null) {
+//			view.setMode(Mode.VIEW_EDIT);
+//		} else {
+//			view.setMode(Mode.VIEW);
+//		}
+	}
+        
+        private void refreshViewAdmin(Order order) {
+		view.setOrder(order);
+                view.modifyButtonsForAdmin();
+                
 //		if (order.getId() == null) {
 //			view.setMode(Mode.VIEW_EDIT);
 //		} else {
@@ -237,10 +241,10 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 		emptyRows.forEach(this::removeOrderItem);
 	}
 
-	private Order saveOrder() {
+	private Order saveOrder(Order order) {
 		try {
 			//filterEmptyProducts();
-			Order order = view.getOrder();
+			order = view.getOrder(order);
                         System.out.println("order="+order);
 			return orderService.saveOrder(order, SecurityUtils.getCurrentUser(userService));
 		} catch (ValidationException e) {
@@ -341,4 +345,41 @@ public class OrderEditPresenter implements Serializable, HasLogger {
             view.inactiveEndDate.setEnabled(false);
         }
     }
+
+    private void saveSubscription(Order order, String buttonCaption) {
+        short noOfSeats=1;
+        User user = SecurityUtils.getCurrentUser(userService);
+        Subscriptions s = new Subscriptions();
+        s.setEmail(user.getEmail());
+        s.setName(user.getName());
+        s.setPhone(user.getPhone());
+        s.setStatus(String.valueOf(SubscriptionStatus.APPLIED));
+        s.setSDate(LocalDate.now());
+        s.setNoSeats(noOfSeats);
+        s.setListingId(order.getId());
+        if(buttonCaption.equalsIgnoreCase("get ride"))
+        {
+            s.setFromDate(LocalDate.now());
+            s.setToDate(LocalDate.now());
+        }
+        else
+        {
+            s.setFromDate(order.getValidFrom().toLocalDate());
+            s.setToDate(order.getValidTo());
+        }
+        
+        subscriptionsService.saveSubscriptions(s);
+    }
+
+    public void getRide(ClickEvent e) {
+        
+			saveSubscription(view.getOrderBeingSubscribed(),e.getButton().getCaption());
+                        //Notification.show("Subscription request successfully sent to the "+order.getName(),"",Notification.Type.HUMANIZED_MESSAGE);
+                        new Notification("Subscription request successfully sent to the "+view.getOrderBeingSubscribed().getName(),"", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());
+                        navigationManager.navigateTo(StorefrontView.class);
+    }
+    
+    public enum SubscriptionStatus {
+		APPLIED,APPROVED,REJECTED,CANCELLED
+	}
 }

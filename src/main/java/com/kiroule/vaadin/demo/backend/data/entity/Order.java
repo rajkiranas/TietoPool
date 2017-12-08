@@ -3,6 +3,7 @@ package com.kiroule.vaadin.demo.backend.data.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.NamedEntityGraph;
@@ -11,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -26,6 +28,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 
 public class Order extends AbstractEntity {
+
+    /**
+     * @return the subscriptionsList
+     */
+    public List<Subscriptions> getSubscriptionsList() {
+        return subscriptionsList;
+    }
+
+    /**
+     * @param subscriptionsList the subscriptionsList to set
+     */
+    public void setSubscriptionsList(List<Subscriptions> subscriptionsList) {
+        this.subscriptionsList = subscriptionsList;
+    }
 
 	
     @Size(max = 200)
@@ -92,6 +108,10 @@ public class Order extends AbstractEntity {
     
     @Column(name = "no_seats")
     private int noSeats;
+    
+    @OneToMany(mappedBy = "listingId",cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    //@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    private List<Subscriptions> subscriptionsList;
 
     public Order() {
     }
