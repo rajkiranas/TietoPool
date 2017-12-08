@@ -149,7 +149,8 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 			view.setMode(Mode.VIEW_EDIT);
 		} else if (view.getMode() == Mode.CREATE) {
 			// Back to edit
-			view.setMode(Mode.VIEW_EDIT);
+			//view.setMode(Mode.VIEW_EDIT);
+                        navigationManager.navigateTo(StorefrontView.class);
 		} else if (view.getMode() == Mode.VIEW_EDIT) {
 			// Cancel edit
 			Long id = view.getOrder().getId();
@@ -326,5 +327,18 @@ public class OrderEditPresenter implements Serializable, HasLogger {
          // mapLabel.
         mapLayout.addComponent(mapLabel);
         //view.formAndMapContainer.addComponent(mapLayout);
+    }
+
+    public void inactiveClicked(ValueChangeEvent<Boolean> e) {
+        if(e.getValue())
+        {
+            view.inactiveStDate.setEnabled(true);
+            view.inactiveEndDate.setEnabled(true);
+        }
+        else
+        {
+            view.inactiveStDate.setEnabled(false);
+            view.inactiveEndDate.setEnabled(false);
+        }
     }
 }

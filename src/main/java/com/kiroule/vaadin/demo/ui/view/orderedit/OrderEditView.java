@@ -100,6 +100,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		cancel.addClickListener(e -> presenter.editBackCancelPressed());
 		ok.addClickListener(e -> presenter.okPressed());
                 route.addValueChangeListener(e -> presenter.routeSelected(e));
+                inactive.addValueChangeListener(e -> presenter.inactiveClicked(e));
                 
 	}
 
@@ -193,8 +194,9 @@ public class OrderEditView extends OrderEditViewDesign implements View {
                 order.setStartTime(validFrom.getValue().toLocalTime());
 //                order.setEndTime(startTime.plusHours(1));
                 
-                order.setIsActive(isActive.getValue());
-                if(!isActive.getValue())
+                order.setIsActive(!inactive.getValue());
+                
+                if(inactive.getValue())
                 {
                     order.setInactiveStDt(inactiveStDate.getValue());
                     order.setInactiveEndDt(inactiveEndDate.getValue());
@@ -242,7 +244,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 //			ok.setCaption("Mark as " + nextState.map(OrderState::getDisplayName).orElse("?"));
 //			ok.setVisible(nextState.isPresent());
 		} else if (mode == Mode.CREATE) {
-			cancel.setCaption("Back");
+			//cancel.setCaption("Back");
 			cancel.setIcon(VaadinIcons.ANGLE_LEFT);
 			//ok.setCaption("Place order");
 			ok.setVisible(true);

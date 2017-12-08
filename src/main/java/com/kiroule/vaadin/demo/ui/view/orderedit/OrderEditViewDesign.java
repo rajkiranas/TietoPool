@@ -36,7 +36,7 @@ public class OrderEditViewDesign extends VerticalLayout {
     protected TextField endPoint;
     protected DateTimeField validFrom;
     protected DateField validTo;
-    protected CheckBox isActive;
+    protected CheckBox inactive;
     protected DateField inactiveStDate;
     protected DateField inactiveEndDate;
     protected CheckBox chargeable;
