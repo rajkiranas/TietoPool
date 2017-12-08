@@ -131,13 +131,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
                         
 		if (id == null) {
 			// New
-			order = new Order();
-//			order.setState(OrderState.NEW);
-//			order.setItems(new ArrayList<>());
-//			order.setCustomer(new Customer());
-//			order.setDueDate(LocalDate.now().plusDays(1));
-//			order.setDueTime(LocalTime.of(8, 00));
-//			order.setPickupLocation(pickupLocationService.getDefault());
+			order = new Order();//			
                         view.setMode(Mode.CREATE);
                         
 		} else 
@@ -147,11 +141,13 @@ public class OrderEditPresenter implements Serializable, HasLogger {
                         
                         if(user.getEmail().equalsIgnoreCase(order.getEmail()))
                         {
+                            //admin
                             view.setMode(Mode.VIEW_EDIT);
-                            //navigate to mypool view
+                            refreshViewAdmin(order);
                         }
                         else
                         {
+                            //other users for suscribing
                             view.setMode(Mode.VIEW);                            
                             refreshView(order);
                         }
@@ -177,40 +173,24 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 		if (view.getMode() == Mode.VIEW) {
 			// Set next state
 			Order order = view.getOrderBeingSubscribed();
-			saveSubscription(order,e.getButton().getCaption());
-                        //Notification.show("Subscription request successfully sent to the "+order.getName(),"",Notification.Type.HUMANIZED_MESSAGE);
-                        new Notification("Subscription request successfully sent to the "+order.getName(),"", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());
-//                        try {
-//                            Thread.currentThread().sleep(500);
-//                        } catch (InterruptedException ex) {
-//                            Logger.getLogger(OrderEditPresenter.class.getName()).log(Level.SEVERE, null, ex);
-//                        }
+			saveSubscription(order,e.getButton().getCaption());                        
+                        new Notification("Subscription request successfully sent to the "+order.getName(),"", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());//                      
                         navigationManager.navigateTo(StorefrontView.class);
-		} else if (view.getMode() == Mode.CREATE) {
+		
+                } else if (view.getMode() == Mode.CREATE) {
                                     
-			Order order = saveOrder();
+			Order order = saveOrder(null);
 			if (order != null) {
 				// Navigate to edit view so URL is updated correctly
-				navigationManager.navigateTo(StorefrontView.class);
-                                //updateViewParameter("" + order.getId());
-				//enterView(order.getId());
+                                new Notification("Carpool successfully created","", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());//                      
+				navigationManager.navigateTo(StorefrontView.class);                                
 			}
 		} else if (view.getMode() == Mode.VIEW_EDIT) {
-			Optional<HasValue<?>> firstErrorField = view.validate().findFirst();
-			if (firstErrorField.isPresent()) {
-				((Focusable) firstErrorField.get()).focus();
-				return;
-			}
-			// New order should still show a confirmation page
-			Order order = view.getOrder();
-			if (order.getId() == null) {
-				filterEmptyProducts();
-				view.setMode(Mode.CREATE);
-			} else {
-				order = saveOrder();
-				if (order != null) {
-					refresh(order.getId());
-				}
+			Order order = saveOrder(view.getOrderBeingSubscribed());
+			if (order != null) {
+				// Navigate to edit view so URL is updated correctly
+                                new Notification("Carpool successfully updated","", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());//                      
+				navigationManager.navigateTo(StorefrontView.class);                                
 			}
 		}
                 
@@ -230,7 +210,20 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 
 	private void refreshView(Order order) {
 		view.setOrder(order);
+                view.modifyButtonsForView();
+                view.lockTheFormFields();
 		updateTotalSum();
+//		if (order.getId() == null) {
+//			view.setMode(Mode.VIEW_EDIT);
+//		} else {
+//			view.setMode(Mode.VIEW);
+//		}
+	}
+        
+        private void refreshViewAdmin(Order order) {
+		view.setOrder(order);
+                view.modifyButtonsForAdmin();
+                
 //		if (order.getId() == null) {
 //			view.setMode(Mode.VIEW_EDIT);
 //		} else {
@@ -248,10 +241,10 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 		emptyRows.forEach(this::removeOrderItem);
 	}
 
-	private Order saveOrder() {
+	private Order saveOrder(Order order) {
 		try {
 			//filterEmptyProducts();
-			Order order = view.getOrder();
+			order = view.getOrder(order);
                         System.out.println("order="+order);
 			return orderService.saveOrder(order, SecurityUtils.getCurrentUser(userService));
 		} catch (ValidationException e) {

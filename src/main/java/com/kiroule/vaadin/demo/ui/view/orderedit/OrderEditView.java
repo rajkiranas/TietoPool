@@ -167,19 +167,25 @@ public class OrderEditView extends OrderEditViewDesign implements View {
                     inactiveEndDate.setValue(order.getInactiveEndDt());
                 }
                 
-                
                 route.setSelectedItem(order.getRoute().getId()+":"+order.getRoute().getSource()+"-to-"+order.getRoute().getDestination());
-                
-                
-                 ok.setCaption("Subscribe");
-                 Button takeRide = new Button("Get ride");
-                 cancelOkBtnLayout.addComponent(takeRide);
-                 takeRide.setStyleName("primary icon-align-right");
-                 takeRide.addClickListener(e -> presenter.getRide(e));
-                 lockTheFormFields();
-		
+                		
 		//hasChanges = false;
 	}
+        
+        public void modifyButtonsForView()
+        {
+            ok.setCaption("Subscribe");
+                 Button takeRide = new Button("Get ride");
+                 takeRide.setIcon(VaadinIcons.ANGLE_DOUBLE_RIGHT);
+                 cancelOkBtnLayout.addComponent(takeRide);
+                 takeRide.setStyleName("primary icon-align-right");
+                 takeRide.addClickListener(e -> presenter.getRide(e));            
+        }
+        
+        public void modifyButtonsForAdmin()
+        {
+            ok.setCaption("Update");                             
+        }
 
 	private void addEmptyOrderItem() {
 		OrderItem orderItem = new OrderItem();
@@ -215,9 +221,12 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		return productInfo;
 	}
 
-	protected Order getOrder() {
+	protected Order getOrder(Order order) {
 		//return binder.getBean();
-                Order order = new Order();
+                if(order==null)
+                {
+                    order = new Order();
+                }
                 
                 order.setName(fullName.getValue());
                 order.setEmail(email.getValue());
@@ -296,12 +305,12 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		} else if (mode == Mode.VIEW_EDIT) {
 			cancel.setCaption("Cancel");
 			cancel.setIcon(VaadinIcons.CLOSE);
-			if (getOrder() != null && !getOrder().isNew()) {
-				ok.setCaption("Save");
-			} else {
-				ok.setCaption("Review order");
-			}
-			ok.setVisible(true);
+//			if (getOrder() != null && !getOrder().isNew()) {
+//				ok.setCaption("Save");
+//			} else {
+//				ok.setCaption("Review order");
+//			}
+//			ok.setVisible(true);
 		} else {
 			throw new IllegalArgumentException("Unknown mode " + mode);
 		}
@@ -344,7 +353,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		return hasChanges;
 	}
 
-private void lockTheFormFields() {
+public void lockTheFormFields() {
                 fullName.setEnabled(false);
                 email.setEnabled(false);
                 phone.setEnabled(false);
