@@ -15,10 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 @SpringComponent
 public class GoogleMapsUtil 
 {
-    @Value("${google.map.iframe.url.directions}")
-    private String directionsUrl;   
     
-    @Value("${google.map.iframe.url.place}")
+    private String directionsUrl;    
     private String placeUrl;   
     
     private static final String SPACE=" ";
@@ -29,6 +27,7 @@ public class GoogleMapsUtil
     
     public String getDirectionsMap(String p1, String p2)
     {
+        directionsUrl="https://www.google.com/maps/embed/v1/directions?key=AIzaSyBBFeOd6XZIXthP3jgWtEDBtjlSTcfA0ZM&origin=P1_PLACEHOLDER&destination=P2_PLACEHOLDER&avoid=tolls|highways";
         p1=p1.replaceAll(SPACE, PLUS_SIGN);
         p2=p2.replaceAll(SPACE, PLUS_SIGN);
         directionsUrl=directionsUrl.replaceAll(P1_PLACEHOLDER, p1);
@@ -39,6 +38,7 @@ public class GoogleMapsUtil
     
     public String getPlaceMap(String p1)
     {
+        placeUrl="https://www.google.com/maps/embed/v1/place?key=AIzaSyBBFeOd6XZIXthP3jgWtEDBtjlSTcfA0ZM&q=P1_PLACEHOLDER";
         p1=p1.replaceAll(SPACE, PLUS_SIGN);
         
         placeUrl=placeUrl.replaceAll(P1_PLACEHOLDER, p1);
