@@ -119,7 +119,7 @@ public class OrdersGrid extends Grid<Order> {
 	}
         
         private static String threeRowCell(String header, String content1, String content2) {
-		return "<div class=\"header\" >" + HtmlUtils.htmlEscape(header) 
+		return "<div class=\"header\" style=\"font-weight:bold;\" >" + HtmlUtils.htmlEscape(header) 
                         +"<br>From<br>" +HtmlUtils.htmlEscape(content1)
                         +"<br>To<br>"+ HtmlUtils.htmlEscape(content2) + "</div>";
 	}
