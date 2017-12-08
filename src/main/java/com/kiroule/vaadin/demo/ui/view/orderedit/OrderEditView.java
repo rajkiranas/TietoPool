@@ -27,6 +27,7 @@ import com.kiroule.vaadin.demo.backend.data.entity.Route;
 import com.kiroule.vaadin.demo.backend.service.RouteService;
 import com.kiroule.vaadin.demo.ui.components.ConfirmPopup;
 import com.kiroule.vaadin.demo.ui.util.DollarPriceConverter;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import java.time.LocalDate;
@@ -38,55 +39,20 @@ import java.util.List;
 @SpringView(name = "order")
 public class OrderEditView extends OrderEditViewDesign implements View {
 
-    private void lockTheFormFields() {
-                fullName.setEnabled(false);
-                email.setEnabled(false);
-                phone.setEnabled(false);
-                
-                vehicleBrand.setEnabled(false);
-                vehicleNumber.setEnabled(false);
-                //not handled, only shown currently
-                //vehicleType.setValue(4L);
-                noSeats.setEnabled(false);
-                
-                chargeable.setEnabled(false);
-                startPoint.setEnabled(false);
-                endPoint.setEnabled(false);
-                
-                validFrom.setEnabled(false);
-                validTo.setEnabled(false);                
-                
-                inactive.setEnabled(false);                
-                
-                    inactiveStDate.setEnabled(false);
-                    inactiveEndDate.setEnabled(false);
-                route.setEnabled(false);
+    /**
+     * @return the orderBeingSubscribed
+     */
+    public Order getOrderBeingSubscribed() {
+        return orderBeingSubscribed;
     }
-    
-    private void enableFormFields() {
-                fullName.setEnabled(true);
-                email.setEnabled(true);
-                phone.setEnabled(true);
-                
-                vehicleBrand.setEnabled(true);
-                vehicleNumber.setEnabled(true);
-                //not handled, only shown currently
-                //vehicleType.setValue(4L);
-                noSeats.setEnabled(true);
-                
-                chargeable.setEnabled(true);
-                startPoint.setEnabled(true);
-                endPoint.setEnabled(true);
-                
-                validFrom.setEnabled(true);
-                validTo.setEnabled(true);                
-                
-                inactive.setEnabled(true);                
-                
-                    inactiveStDate.setEnabled(true);
-                    inactiveEndDate.setEnabled(true);
-                route.setEnabled(true);
+
+    /**
+     * @param orderBeingSubscribed the orderBeingSubscribed to set
+     */
+    public void setOrderBeingSubscribed(Order orderBeingSubscribed) {
+        this.orderBeingSubscribed = orderBeingSubscribed;
     }
+
     
     
 
@@ -108,6 +74,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
         
         @Autowired
         private RouteService routeService;
+        private Order orderBeingSubscribed;
 
 	@Autowired
 	public OrderEditView(OrderEditPresenter presenter, BeanFactory beanFactory, DollarPriceConverter priceConverter) {
@@ -148,7 +115,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 
 		//addItems.addClickListener(e -> addEmptyOrderItem());
 		cancel.addClickListener(e -> presenter.editBackCancelPressed());
-		ok.addClickListener(e -> presenter.okPressed());
+		ok.addClickListener(e -> presenter.okPressed(e));
                 route.addValueChangeListener(e -> presenter.routeSelected(e));
                 inactive.addValueChangeListener(e -> presenter.inactiveClicked(e));
                 
@@ -167,7 +134,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 
 	public void setOrder(Order order) {
 		//stateLabel.setValue(order.getState().getDisplayName());
-		
+		setOrderBeingSubscribed(order);
 		fullName.setValue(order.getName());
                 email.setValue(order.getEmail());
                 phone.setValue(String.valueOf(order.getPhone()));
@@ -205,7 +172,10 @@ public class OrderEditView extends OrderEditViewDesign implements View {
                 
                 
                  ok.setCaption("Subscribe");
-                 
+                 Button takeRide = new Button("Get ride");
+                 cancelOkBtnLayout.addComponent(takeRide);
+                 takeRide.setStyleName("primary icon-align-right");
+                 takeRide.addClickListener(e -> presenter.getRide(e));
                  lockTheFormFields();
 		
 		//hasChanges = false;
@@ -280,8 +250,7 @@ public class OrderEditView extends OrderEditViewDesign implements View {
                 
                 String routeId = route.getValue();
                 routeId=routeId.substring(0,routeId.indexOf(":"));
-                order.setRoute(routeService.findRoute(Long.parseLong(routeId)));
-                
+                order.setRoute(routeService.findRoute(Long.parseLong(routeId)));                
                 
                 return order;
 	}
@@ -374,6 +343,56 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 	public boolean containsUnsavedChanges() {
 		return hasChanges;
 	}
-        
+
+private void lockTheFormFields() {
+                fullName.setEnabled(false);
+                email.setEnabled(false);
+                phone.setEnabled(false);
+                
+                vehicleBrand.setEnabled(false);
+                vehicleNumber.setEnabled(false);
+                //not handled, only shown currently
+                //vehicleType.setValue(4L);
+                noSeats.setEnabled(false);
+                
+                chargeable.setEnabled(false);
+                startPoint.setEnabled(false);
+                endPoint.setEnabled(false);
+                
+                validFrom.setEnabled(false);
+                validTo.setEnabled(false);                
+                
+                inactive.setEnabled(false);                
+                
+                    inactiveStDate.setEnabled(false);
+                    inactiveEndDate.setEnabled(false);
+                route.setEnabled(false);
+    }
+    
+    private void enableFormFields() {
+                fullName.setEnabled(true);
+                email.setEnabled(true);
+                phone.setEnabled(true);
+                
+                vehicleBrand.setEnabled(true);
+                vehicleNumber.setEnabled(true);
+                //not handled, only shown currently
+                //vehicleType.setValue(4L);
+                noSeats.setEnabled(true);
+                
+                chargeable.setEnabled(true);
+                startPoint.setEnabled(true);
+                endPoint.setEnabled(true);
+                
+                validFrom.setEnabled(true);
+                validTo.setEnabled(true);                
+                
+                inactive.setEnabled(true);                
+                
+                    inactiveStDate.setEnabled(true);
+                    inactiveEndDate.setEnabled(true);
+                route.setEnabled(true);
+    }
+            
        
 }
