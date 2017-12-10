@@ -23,4 +23,7 @@ public interface SubscriptionsRepository extends JpaRepository<Subscriptions, Lo
         
         @EntityGraph(value = "Subscriptions.getSubscriptionsData", type = EntityGraphType.LOAD)
 	List<Subscriptions> findByListingId(Long listingId);
+        
+        @EntityGraph(value = "Subscriptions.getSubscriptionsData", type = EntityGraphType.LOAD)
+	List<Subscriptions> findByEmailContainingIgnoreCase(String email);
 }

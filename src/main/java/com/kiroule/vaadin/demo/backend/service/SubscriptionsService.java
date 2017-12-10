@@ -1,6 +1,6 @@
 package com.kiroule.vaadin.demo.backend.service;
 
-import java.time.LocalDate;
+import com.kiroule.vaadin.demo.backend.OrderRepository;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +17,7 @@ import com.kiroule.vaadin.demo.backend.RouteRepository;
 import com.kiroule.vaadin.demo.backend.SubscriptionsRepository;
 import com.kiroule.vaadin.demo.backend.data.DashboardData;
 import com.kiroule.vaadin.demo.backend.data.DeliveryStats;
+import com.kiroule.vaadin.demo.backend.data.MySubscriptionsBean;
 import com.kiroule.vaadin.demo.backend.data.entity.Order;
 import com.kiroule.vaadin.demo.backend.data.entity.Product;
 import com.kiroule.vaadin.demo.backend.data.entity.Route;
@@ -28,6 +29,9 @@ public class SubscriptionsService {
 
         @Autowired
 	private SubscriptionsRepository subscriptionsRepository;
+        
+        @Autowired
+	private OrderRepository orderRepository;
 
 //	private static Set<OrderState> notAvailableStates;
 //
@@ -60,6 +64,41 @@ public class SubscriptionsService {
         {
             return subscriptionsRepository.findByListingId(listingId);
         }
-
-
+        
+        public List<Subscriptions> findByEmail(String email)
+        {
+            return subscriptionsRepository.findByEmailContainingIgnoreCase(email);
+        }
+        
+        public List<MySubscriptionsBean> findMySubscriptions(String email)
+        {
+            List<MySubscriptionsBean> mySubBeanList = new ArrayList<MySubscriptionsBean>();
+            MySubscriptionsBean b=null;
+            List<Subscriptions> subList = subscriptionsRepository.findByEmailContainingIgnoreCase(email);
+            //System.out.println("%%%%%%%%subList="+subList.size());
+            for (Subscriptions s : subList) {
+                Order o = orderRepository.findOne(s.getListingId());
+              //  System.out.println("***** o = "+o);
+                b=new MySubscriptionsBean();
+                
+                b.setChargeable(o.getChargeable());
+                b.setEndPoint(o.getEndPoint());
+                b.setFromDate(o.getValidFrom().toLocalDate());
+                b.setInactiveEndDt(o.getInactiveEndDt());
+                b.setInactiveStDt(o.getInactiveStDt());
+                b.setName(o.getName());
+                b.setPhone(o.getPhone());
+                b.setStartPoint(o.getStartPoint());
+                b.setStartTime(o.getStartTime());
+                b.setToDate(o.getValidTo());
+                b.setVehicleBrand(o.getVehicleBrand());
+                b.setVehicleNumber(o.getVehicleNumber());
+                b.setListingId(o.getId());
+                b.setStatus(s.getStatus());
+                b.setSubscriptionId(s.getId());
+                mySubBeanList.add(b);                
+            }
+            
+            return mySubBeanList;
+        }
 }

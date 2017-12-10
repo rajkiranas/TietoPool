@@ -20,6 +20,8 @@ import com.kiroule.vaadin.demo.ui.view.dashboard.DashboardView;
 import com.kiroule.vaadin.demo.ui.view.myview.MyDashboardView;
 import com.kiroule.vaadin.demo.ui.view.orderedit.OrderEditView;
 import com.kiroule.vaadin.demo.ui.view.storefront.StorefrontView;
+import com.kiroule.vaadin.demo.ui.view.subscriptions.MySubscriptions;
+import com.kiroule.vaadin.demo.ui.view.subscriptions.MySubscriptionsView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.UI;
 
@@ -49,7 +51,7 @@ public class MainView extends MainViewDesign implements ViewDisplay {
 	public void init() {
 		attachNavigation(storefront, StorefrontView.class);
 		attachNavigation(order, OrderEditView.class);
-		attachNavigation(users, UserAdminView.class);
+		attachNavigation(mysubscriptions, MySubscriptionsView.class);
 		//attachNavigation(products, ProductAdminView.class);
                 //attachNavigation(new Button("Dash"), MyDashboardView.class);
 
