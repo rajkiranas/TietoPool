@@ -1,5 +1,6 @@
 package com.kiroule.vaadin.demo.ui.view.orderedit;
 
+import com.kiroule.vaadin.demo.app.security.SecurityUtils;
 import java.time.LocalTime;
 import java.util.Locale;
 import java.util.Optional;
@@ -24,8 +25,11 @@ import com.kiroule.vaadin.demo.backend.data.OrderState;
 import com.kiroule.vaadin.demo.backend.data.entity.Order;
 import com.kiroule.vaadin.demo.backend.data.entity.OrderItem;
 import com.kiroule.vaadin.demo.backend.data.entity.Route;
+import com.kiroule.vaadin.demo.backend.data.entity.User;
+import com.kiroule.vaadin.demo.backend.service.OrderService;
 import com.kiroule.vaadin.demo.backend.service.RouteService;
 import com.kiroule.vaadin.demo.backend.service.SubscriptionsService;
+import com.kiroule.vaadin.demo.backend.service.UserService;
 import com.kiroule.vaadin.demo.ui.components.ConfirmPopup;
 import com.kiroule.vaadin.demo.ui.util.DollarPriceConverter;
 import com.vaadin.ui.Button;
@@ -58,6 +62,13 @@ public class OrderEditView extends OrderEditViewDesign implements View {
         
         @Autowired
         private RouteService routeService;
+        
+        @Autowired
+        private UserService userService;
+        
+        @Autowired
+        private OrderService orderService;
+        
         private Order orderBeingSubscribed;
         
         @Autowired
@@ -111,10 +122,18 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 		String orderId = event.getParameters();
+                System.out.println("*****"+((com.kiroule.vaadin.demo.ui.navigation.NavigationManager)event.getSource()));
                 System.out.println("orderIdorderIdorderId="+orderId);
-		if ("".equals(orderId)) {
+		if (orderId.equalsIgnoreCase("mypool"))  {
 			presenter.enterView(null);                        
-		} else {
+		} else if("".equals(orderId))
+                {
+                    User user = SecurityUtils.getCurrentUser(userService);
+			Order order = orderService.findByEmail(user.getEmail());
+                        System.out.println("********="+order.getId());
+                        presenter.enterView(order.getId());
+                }
+                else {
 			presenter.enterView(Long.valueOf(orderId));
 		}                
 	}

@@ -18,6 +18,7 @@ import com.kiroule.vaadin.demo.ui.view.admin.product.ProductAdminView;
 import com.kiroule.vaadin.demo.ui.view.admin.user.UserAdminView;
 import com.kiroule.vaadin.demo.ui.view.dashboard.DashboardView;
 import com.kiroule.vaadin.demo.ui.view.myview.MyDashboardView;
+import com.kiroule.vaadin.demo.ui.view.orderedit.OrderEditView;
 import com.kiroule.vaadin.demo.ui.view.storefront.StorefrontView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.UI;
@@ -47,7 +48,7 @@ public class MainView extends MainViewDesign implements ViewDisplay {
 	@PostConstruct
 	public void init() {
 		attachNavigation(storefront, StorefrontView.class);
-		attachNavigation(dashboard, DashboardView.class);
+		attachNavigation(order, OrderEditView.class);
 		attachNavigation(users, UserAdminView.class);
 		attachNavigation(products, ProductAdminView.class);
                 attachNavigation(new Button("Dash"), MyDashboardView.class);
@@ -72,6 +73,12 @@ public class MainView extends MainViewDesign implements ViewDisplay {
 
 		if (hasAccessToView) {
 			navigationButtons.put(targetView, navigationButton);
+                        
+                        if(targetView.toString().indexOf("com.kiroule.vaadin.demo.ui.view.orderedit.OrderEditView")>0)
+                        {
+                            System.out.println("targetView="+targetView);
+                            navigationButton.addClickListener(e -> navigationManager.navigateTo(targetView,"mypool"));
+                        }
 			navigationButton.addClickListener(e -> navigationManager.navigateTo(targetView));
 		}
 	}

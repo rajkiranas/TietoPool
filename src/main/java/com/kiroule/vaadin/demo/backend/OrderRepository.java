@@ -19,6 +19,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Override
 	@EntityGraph(value = "Order.gridData", type = EntityGraphType.LOAD)
 	Order findOne(Long id);
+        
+        
+	//@EntityGraph(value = "Order.gridData", type = EntityGraphType.LOAD)
+	Order findByEmailContainingIgnoreCase(String email);
 
 	@EntityGraph(value = "Order.gridData", type = EntityGraphType.LOAD)
 	Page<Order> findByValidToGreaterThanEqual(LocalDate filterDate, Pageable pageable);

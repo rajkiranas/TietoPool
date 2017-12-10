@@ -25,10 +25,10 @@ public class MainViewDesign extends HorizontalLayout {
 	protected Button menuButton;
 	protected CssLayout menu;
 	protected Button storefront;
-	protected Button dashboard;
+	protected Button order;
 	protected Button users;
-	protected Button products;
 	protected Button logout;
+	protected Button products;
 	protected VerticalLayout content;
 
 	public MainViewDesign() {

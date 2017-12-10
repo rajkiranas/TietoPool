@@ -49,6 +49,10 @@ public class OrderService {
 	public Order findOrder(Long id) {
 		return orderRepository.findOne(id);
 	}
+        
+        public Order findByEmail(String email) {
+		return orderRepository.findByEmailContainingIgnoreCase(email);
+	}
 
 //	public Order changeState(Order order, OrderState state, User user) {
 ////		if (order.getState() == state) {
