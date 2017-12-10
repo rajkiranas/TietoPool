@@ -45,6 +45,7 @@ public class Subscriptions  extends AbstractEntity implements Serializable {
     @Size(max = 50)
     @Column(name = "email")
     private String email;
+    
     @Column(name = "phone")
     private Long phone;
     @Column(name = "s_date")
@@ -52,16 +53,15 @@ public class Subscriptions  extends AbstractEntity implements Serializable {
     private LocalDate sDate;
     @Column(name = "No_Seats")
     private Short noSeats;
+    
     @Size(max = 50)
     @Column(name = "Status")
     private String status;
-    @Column(name = "from_date")
     
-    
+    @Column(name = "from_date")    
     private LocalDate fromDate;
-    @Column(name = "to_date")
     
-    
+    @Column(name = "to_date")       
     private LocalDate toDate;
     
     
@@ -69,7 +69,8 @@ public class Subscriptions  extends AbstractEntity implements Serializable {
 //    @ManyToOne(fetch = FetchType.EAGER)
 //    private Order orderID;
     
-    private long listingId;
+    @Column(name = "listing_id")
+    private Long listingId;
 
     public Subscriptions() {
     }
@@ -185,14 +186,14 @@ public class Subscriptions  extends AbstractEntity implements Serializable {
     /**
      * @return the listingId
      */
-    public long getListingId() {
+    public Long getListingId() {
         return listingId;
     }
 
     /**
      * @param listingId the listingId to set
      */
-    public void setListingId(long listingId) {
+    public void setListingId(Long listingId) {
         this.listingId = listingId;
     }
     

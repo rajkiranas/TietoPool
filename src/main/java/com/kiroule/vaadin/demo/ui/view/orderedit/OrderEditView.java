@@ -25,6 +25,7 @@ import com.kiroule.vaadin.demo.backend.data.entity.Order;
 import com.kiroule.vaadin.demo.backend.data.entity.OrderItem;
 import com.kiroule.vaadin.demo.backend.data.entity.Route;
 import com.kiroule.vaadin.demo.backend.service.RouteService;
+import com.kiroule.vaadin.demo.backend.service.SubscriptionsService;
 import com.kiroule.vaadin.demo.ui.components.ConfirmPopup;
 import com.kiroule.vaadin.demo.ui.util.DollarPriceConverter;
 import com.vaadin.ui.Button;
@@ -39,24 +40,7 @@ import java.util.List;
 @SpringView(name = "order")
 public class OrderEditView extends OrderEditViewDesign implements View {
 
-    /**
-     * @return the orderBeingSubscribed
-     */
-    public Order getOrderBeingSubscribed() {
-        return orderBeingSubscribed;
-    }
-
-    /**
-     * @param orderBeingSubscribed the orderBeingSubscribed to set
-     */
-    public void setOrderBeingSubscribed(Order orderBeingSubscribed) {
-        this.orderBeingSubscribed = orderBeingSubscribed;
-    }
-
-    
-    
-
-	public enum Mode {
+    public enum Mode {
 		VIEW_EDIT, VIEW, CREATE;
 	}
 
@@ -75,6 +59,9 @@ public class OrderEditView extends OrderEditViewDesign implements View {
         @Autowired
         private RouteService routeService;
         private Order orderBeingSubscribed;
+        
+        @Autowired
+        private SubscriptionsService subscriptionsService;
 
 	@Autowired
 	public OrderEditView(OrderEditPresenter presenter, BeanFactory beanFactory, DollarPriceConverter priceConverter) {
@@ -402,6 +389,19 @@ public void lockTheFormFields() {
                     inactiveEndDate.setEnabled(true);
                 route.setEnabled(true);
     }
-            
+
+    /**
+     * @return the orderBeingSubscribed
+     */
+    public Order getOrderBeingSubscribed() {
+        return orderBeingSubscribed;
+    }
+
+    /**
+     * @param orderBeingSubscribed the orderBeingSubscribed to set
+     */
+    public void setOrderBeingSubscribed(Order orderBeingSubscribed) {
+        this.orderBeingSubscribed = orderBeingSubscribed;
+    }
        
 }

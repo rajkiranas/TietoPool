@@ -43,17 +43,22 @@ public class SubscriptionsService {
 		this.subscriptionsRepository = subscriptionsRepository;
 	}
 
-	public Subscriptions findRoute(Long id) {
+	public Subscriptions findSubscription(Long id) {
 		return subscriptionsRepository.findOne(id);
 	}
         
-        public List<Subscriptions> getAllRoutes() {
+        public List<Subscriptions> getAllSubscriptions() {
 		return subscriptionsRepository.findAll();
 	}
         
         public void saveSubscriptions(Subscriptions s)
         {
             subscriptionsRepository.save(s);
+        }
+        
+        public List<Subscriptions> findByListingId(Long listingId)
+        {
+            return subscriptionsRepository.findByListingId(listingId);
         }
 
 

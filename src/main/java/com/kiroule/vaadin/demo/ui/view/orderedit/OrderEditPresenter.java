@@ -46,6 +46,7 @@ import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component.Focusable;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -223,6 +224,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
         private void refreshViewAdmin(Order order) {
 		view.setOrder(order);
                 view.modifyButtonsForAdmin();
+                addSubscriptionGrid(order);
                 
 //		if (order.getId() == null) {
 //			view.setMode(Mode.VIEW_EDIT);
@@ -378,8 +380,33 @@ public class OrderEditPresenter implements Serializable, HasLogger {
                         new Notification("Subscription request successfully sent to the "+view.getOrderBeingSubscribed().getName(),"", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());
                         navigationManager.navigateTo(StorefrontView.class);
     }
+
+    private void addSubscriptionGrid(Order order) {
+        
+        List<Subscriptions> subscriptionsList=order.getSubscriptionsList();        
+        if(subscriptionsList==null || subscriptionsList.size()==0)
+        {
+            mapLayout.addComponent(new Label("<h2><b>There are no subscriptions for this pool yet</b></h2>",ContentMode.HTML));
+        }
+        else
+        {
+            Grid<Subscriptions> grid = new Grid<Subscriptions>("Subscriptions");
+            grid.setSizeFull();
+            grid.setItems(subscriptionsList);
+//            grid.addColumn("name");
+//            grid.addColumn("phone");
+//            grid.addColumn("status");
+            grid.addColumn(Subscriptions::getName).setCaption("Name");
+            grid.addColumn(Subscriptions::getPhone).setCaption("Phone");
+            grid.addColumn(Subscriptions::getStatus).setCaption("Status");
+
+            mapLayout.addComponent(grid);
+        }
+        
+
+    }
     
     public enum SubscriptionStatus {
-		APPLIED,APPROVED,REJECTED,CANCELLED
+		APPLIED,APPROVED,REJECTED,CANCELLED,EXPIRED
 	}
 }

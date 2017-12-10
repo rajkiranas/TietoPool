@@ -20,4 +20,7 @@ public interface SubscriptionsRepository extends JpaRepository<Subscriptions, Lo
 	@Override
 	//@EntityGraph(value = "Route.getAllRoutes", type = EntityGraphType.LOAD)
 	List<Subscriptions> findAll();
+        
+        @EntityGraph(value = "Subscriptions.getSubscriptionsData", type = EntityGraphType.LOAD)
+	List<Subscriptions> findByListingId(Long listingId);
 }
