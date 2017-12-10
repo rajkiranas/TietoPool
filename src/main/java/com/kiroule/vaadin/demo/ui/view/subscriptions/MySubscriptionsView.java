@@ -36,6 +36,7 @@ import com.kiroule.vaadin.demo.backend.service.UserService;
 import com.kiroule.vaadin.demo.ui.components.ConfirmPopup;
 import com.kiroule.vaadin.demo.ui.util.DollarPriceConverter;
 import com.kiroule.vaadin.demo.ui.util.SendMailUtil;
+import com.kiroule.vaadin.demo.ui.util.StyleUtil;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -75,6 +76,8 @@ public class MySubscriptionsView extends MySubscriptions implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
+            verticalWrapper.setStyleName("storefront");
+            
             addSubscriptionGrid();
 	}
 
@@ -102,7 +105,8 @@ public class MySubscriptionsView extends MySubscriptions implements View {
             Grid<MySubscriptionsBean> grid = new Grid<MySubscriptionsBean>("MySubscriptions");
             grid.setSizeFull();
             grid.setItems(subscriptionsList);
-
+            grid.addStyleName("bold");
+            grid.addStyleName(StyleUtil.getRowStyle(subscriptionsList.get(0)));
            
             grid.addColumn(MySubscriptionsBean::getListingId).setCaption("Id");
             grid.addColumn(MySubscriptionsBean::getName).setCaption("Name");
@@ -140,6 +144,10 @@ public class MySubscriptionsView extends MySubscriptions implements View {
         s.setStatus(String.valueOf(OrderEditPresenter.SubscriptionStatus.CANCELLED));
         
         subscriptionsService.saveSubscriptions(s);
+        
+        Order o =orderService.findOrder(s.getListingId());
+        o.setNoSeats(o.getNoSeats()+1);
+        o=orderService.saveOrder(o, null);
         
         User user = SecurityUtils.getCurrentUser(userService);
         List<MySubscriptionsBean> subscriptionsList=subscriptionsService.findMySubscriptions(user.getEmail());

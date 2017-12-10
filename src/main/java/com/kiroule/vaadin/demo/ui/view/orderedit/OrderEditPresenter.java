@@ -38,6 +38,7 @@ import com.kiroule.vaadin.demo.backend.service.UserService;
 import com.kiroule.vaadin.demo.ui.navigation.NavigationManager;
 import com.kiroule.vaadin.demo.ui.util.GoogleMapsUtil;
 import com.kiroule.vaadin.demo.ui.util.SendMailUtil;
+import com.kiroule.vaadin.demo.ui.util.StyleUtil;
 import com.kiroule.vaadin.demo.ui.view.orderedit.OrderEditView.Mode;
 import com.kiroule.vaadin.demo.ui.view.storefront.StorefrontView;
 import com.vaadin.data.HasValue.ValueChangeEvent;
@@ -297,6 +298,8 @@ public class OrderEditPresenter implements Serializable, HasLogger {
         mapLayout = new VerticalLayout();
         mapLayout.setSizeFull();
         mapLayout.setMargin(true);
+        mapLayout.setStyleName("storefront");
+        
         mapLayout.addComponent(mapLabel);
         view.formAndMapContainer.addComponent(mapLayout);
     }
@@ -397,7 +400,10 @@ public class OrderEditPresenter implements Serializable, HasLogger {
         else
         {
             Grid<Subscriptions> grid = new Grid<Subscriptions>("Subscriptions");
-            grid.setSizeFull();
+            //grid.setSizeFull();
+            grid.setWidth("100%");
+            //grid.addStyleName("orders-grid");
+            grid.addStyleName(StyleUtil.getRowStyle(subscriptionsList.get(0)));
             grid.setItems(subscriptionsList);
 //            grid.addColumn("name");
 //            grid.addColumn("phone");
@@ -431,6 +437,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
         if(action.equalsIgnoreCase("Approve"))
         {
             s.setStatus(String.valueOf(SubscriptionStatus.APPROVED));
+            
         }
         else if(action.equalsIgnoreCase("Reject"))
         {
@@ -439,6 +446,11 @@ public class OrderEditPresenter implements Serializable, HasLogger {
         subscriptionsService.saveSubscriptions(s);
         
         order = orderService.findOrder(order.getId());
+        System.out.println("######order="+order);
+        int nos=order.getNoSeats()-1;
+        System.out.println("nos="+nos);
+        order.setNoSeats(nos);
+        order=orderService.saveOrder(order, null);
         //grid.getDataProvider().refreshAll();
         grid.setItems(order.getSubscriptionsList());
         SendMailUtil.send(s.getEmail());

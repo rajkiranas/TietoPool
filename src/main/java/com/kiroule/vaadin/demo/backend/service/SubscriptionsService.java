@@ -89,7 +89,7 @@ public class SubscriptionsService {
                 b.setName(o.getName());
                 b.setPhone(o.getPhone());
                 b.setStartPoint(o.getStartPoint());
-                b.setStartTime(o.getStartTime());
+                b.setStartTime(o.getValidFrom().toLocalTime());
                 b.setToDate(o.getValidTo());
                 b.setVehicleBrand(o.getVehicleBrand());
                 b.setVehicleNumber(o.getVehicleNumber());

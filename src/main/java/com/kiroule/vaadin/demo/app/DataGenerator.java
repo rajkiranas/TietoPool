@@ -47,6 +47,10 @@ public class DataGenerator implements HasLogger {
 			"Mcbride", "Leblanc", "Russell", "Carver", "Benton", "Maldonado", "Lyons" };
         private static final String[] PLACES = new String[] { "Kothrud", "Shivaji Nagar", "Baner", "EON",
 			"Kharadi","Chandani Choowk","Pashan", "SB Road","Hadapsar"};
+        private static final String[] EMAILS = new String[] { "vishal.ambalge@tieto.com", "neha.patil@tieto.com", "pranita.gandhi@tieto.com"};
+        private static final String[] NAMES = new String[] { "Vishal Ambalge", "Neha Patil", "Pranita Gandhi"};
+        private static final String[] CARS = new String[] { "Maruti Suzuki Baleno", "Ford Fiesta", "Volksvagen Vento"};
+        private static final String[] CAR_NUMBERS = new String[] { "MH20CH283", "MH20CH33", "MH20CH77"};
         private static final Long[] ROUTES = new Long[] { 1L,2L,3L,4L,5L,6L,7L,8L,9L,10L};
 
 	private final Random random = new Random(1L);
@@ -116,34 +120,49 @@ public class DataGenerator implements HasLogger {
 		LocalDate newestDate = now.plusMonths(1L);
 
                 int j=0;
-		for (LocalDate dueDate = oldestDate; dueDate.isBefore(newestDate); dueDate = dueDate.plusDays(1)) {
-			// Create a slightly upwards trend - everybody wants to be
-			// successful
-			int relativeYear = dueDate.getYear() - now.getYear() + yearsToInclude;
-			int relativeMonth = relativeYear * 12 + dueDate.getMonthValue();
-			double multiplier = 1.0 + 0.03 * relativeMonth;
-			int ordersThisDay = (int) (random.nextInt(10) + 1 * multiplier);
-			for (int i = 0; i < ordersThisDay; i++) {
-				orders.add(createOrder(routeService));
-			}
-                        j++;
-                        if(j==100)
-                            break;
-		}
+//		for (LocalDate dueDate = oldestDate; dueDate.isBefore(newestDate); dueDate = dueDate.plusDays(1)) {
+//			// Create a slightly upwards trend - everybody wants to be
+//			// successful
+//			int relativeYear = dueDate.getYear() - now.getYear() + yearsToInclude;
+//			int relativeMonth = relativeYear * 12 + dueDate.getMonthValue();
+//			double multiplier = 1.0 + 0.03 * relativeMonth;
+//			int ordersThisDay = (int) (random.nextInt(10) + 1 * multiplier);
+//			for (int i = 0; i < ordersThisDay; i++) {
+//				orders.add(createOrder(routeService));
+//			}
+//                        j++;
+//                        if(j==100)
+//                            break;
+//		}
+
+                Order o = createOrder("Vishal Ambalge", routeService);
+                orders.add(o);
+                o = createOrder("Neha Patil", routeService);
+                orders.add(o);
+                o = createOrder("Pranita Gandhi", routeService);
+                orders.add(o);
+                o = createOrder("Rajkiran Sonde", routeService);
+                orders.add(o);
+                o = createOrder("Pradnyapal Nagrale", routeService);
+                orders.add(o);
 		orderRepository.save(orders);
 	}
 
-	private Order createOrder(RouteService routeService) {
+	private Order createOrder(String name, RouteService routeService) {
 		Order order = new Order();
                 
                 order.setChargeable(false);                
-                order.setEmail("rajkiran.sonde@tieto.com");
+                //String name=getRandom(NAMES);
+                order.setName(name);
+                name=name.replaceAll(" ",".");
+                name=name+"@tieto.com";
+                order.setEmail(name.toLowerCase());
                 order.setEndPoint(getRandom(PLACES));
                 LocalTime startTime = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault()).toLocalTime();
                 order.setStartTime(startTime);
                 order.setEndTime(startTime.plusHours(1));
                 order.setIsActive(true);
-                order.setName("Rajkiran sonde");
+                
                 order.setPhone(9881409240L);                
                 order.setRoute(routeService.findRoute(getRandom(ROUTES)));
                 order.setStartPoint(getRandom(PLACES));
@@ -158,14 +177,14 @@ public class DataGenerator implements HasLogger {
                 else
                 {
                     LocalDateTime startDate = LocalDateTime.now();                
-                    startDate=startDate.minusDays(20);
+                    //startDate=startDate.minusDays(20);
                     order.setValidFrom(startDate);
-                    order.setValidTo(startDate.plusDays(5).toLocalDate());                    
+                    order.setValidTo(startDate.plusDays(30).toLocalDate());                    
                     shuffleDate=true;
                 }
                 
-                order.setVehicleBrand("Maruti Suzuki Baleno");
-                order.setVehicleNumber("MH20CH283");
+                order.setVehicleBrand(getRandom(CARS));
+                order.setVehicleNumber(getRandom(CAR_NUMBERS));
                 order.setVehicleType(4L);
                 order.setNoSeats(4);
 
@@ -367,11 +386,19 @@ public class DataGenerator implements HasLogger {
 //		user.setLocked(true);
 //		barista = userRepository.save(user);
                 
-		User user = new User("owner@tieto.com", "Göran", passwordEncoder.encode("tieto"), Role.ADMIN,9881409240L);
+		User user = new User("vishal.ambalge@tieto.com", "Vishal Ambalge", passwordEncoder.encode("tieto"), Role.ADMIN,9881409240L);
 		user.setLocked(true);
 		userRepository.save(user);
                 
-                user = new User("consumer@tieto.com", "Daniel", passwordEncoder.encode("tieto"), Role.ADMIN,9881409240L);
+                user = new User("neha.patil@tieto.com", "Neha Patil", passwordEncoder.encode("tieto"), Role.ADMIN,9881409240L);
+		user.setLocked(true);
+		userRepository.save(user);
+                
+                user = new User("pranita.gandhi@tieto.com", "Pranita Gandhi", passwordEncoder.encode("tieto"), Role.ADMIN,9881409240L);
+		user.setLocked(true);
+		userRepository.save(user);
+                
+                user = new User("manish.puri@tieto.com", "Manish Raj Puri", passwordEncoder.encode("tieto"), Role.ADMIN,9881409240L);
 		user.setLocked(true);
 		userRepository.save(user);
 	}

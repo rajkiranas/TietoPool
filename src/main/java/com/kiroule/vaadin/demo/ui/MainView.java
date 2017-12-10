@@ -54,7 +54,7 @@ public class MainView extends MainViewDesign implements ViewDisplay {
 		attachNavigation(mysubscriptions, MySubscriptionsView.class);
 		//attachNavigation(products, ProductAdminView.class);
                 //attachNavigation(new Button("Dash"), MyDashboardView.class);
-
+                navigationBar.setStyleName("darkBgColor");
 		logout.addClickListener(e -> logout());
 	}
 
