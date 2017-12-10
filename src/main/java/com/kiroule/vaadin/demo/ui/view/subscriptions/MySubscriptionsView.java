@@ -35,6 +35,7 @@ import com.kiroule.vaadin.demo.backend.service.SubscriptionsService;
 import com.kiroule.vaadin.demo.backend.service.UserService;
 import com.kiroule.vaadin.demo.ui.components.ConfirmPopup;
 import com.kiroule.vaadin.demo.ui.util.DollarPriceConverter;
+import com.kiroule.vaadin.demo.ui.util.SendMailUtil;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -144,6 +145,7 @@ public class MySubscriptionsView extends MySubscriptions implements View {
         List<MySubscriptionsBean> subscriptionsList=subscriptionsService.findMySubscriptions(user.getEmail());
         //grid.getDataProvider().refreshAll();
         grid.setItems(subscriptionsList);
+        SendMailUtil.send(s.getEmail());
     }
 
 	

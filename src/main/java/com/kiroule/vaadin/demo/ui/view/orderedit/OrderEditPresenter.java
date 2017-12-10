@@ -37,6 +37,7 @@ import com.kiroule.vaadin.demo.backend.service.SubscriptionsService;
 import com.kiroule.vaadin.demo.backend.service.UserService;
 import com.kiroule.vaadin.demo.ui.navigation.NavigationManager;
 import com.kiroule.vaadin.demo.ui.util.GoogleMapsUtil;
+import com.kiroule.vaadin.demo.ui.util.SendMailUtil;
 import com.kiroule.vaadin.demo.ui.view.orderedit.OrderEditView.Mode;
 import com.kiroule.vaadin.demo.ui.view.storefront.StorefrontView;
 import com.vaadin.data.HasValue.ValueChangeEvent;
@@ -180,6 +181,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 			Order order = view.getOrderBeingSubscribed();
 			saveSubscription(order,e.getButton().getCaption());                        
                         new Notification("Subscription request successfully sent to the "+order.getName(),"", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());//                      
+                        SendMailUtil.send(order.getEmail());
                         navigationManager.navigateTo(StorefrontView.class);
 		
                 } else if (view.getMode() == Mode.CREATE) {
@@ -439,6 +441,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
         order = orderService.findOrder(order.getId());
         //grid.getDataProvider().refreshAll();
         grid.setItems(order.getSubscriptionsList());
+        SendMailUtil.send(s.getEmail());
     }
     
     

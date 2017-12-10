@@ -24,7 +24,7 @@ public class SendMailUtil {
                              String sub = "Tieto Pool";
                              int index = to.indexOf('.');
                              String Username= to.substring(0,index).toUpperCase();
-                             String msg = "Dear "+Username+",\n \nYou have 1 subscription for carpool. \nFor more details sign in to your TietoPool account. \n\n\nRIDE SMART,\nTieto Pool";
+                             String msg = "Dear "+Username+",\n \nYou have 1 action iteam for carpool. \nFor more details sign in to your TietoPool account. \n\n\nRIDE SMART,\nTieto Pool";
                              
                              // Get properties object
                              //rohit.kapure@tieto.com
