@@ -44,13 +44,17 @@ import com.vaadin.server.AbstractErrorMessage;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component.Focusable;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.ButtonRenderer;
+import com.vaadin.ui.renderers.ClickableRenderer;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -396,15 +400,48 @@ public class OrderEditPresenter implements Serializable, HasLogger {
 //            grid.addColumn("name");
 //            grid.addColumn("phone");
 //            grid.addColumn("status");
-            grid.addColumn(Subscriptions::getName).setCaption("Name");
+            grid.addColumn(Subscriptions::getName).setCaption("Subscriber");
             grid.addColumn(Subscriptions::getPhone).setCaption("Phone");
             grid.addColumn(Subscriptions::getStatus).setCaption("Status");
+//            Button approveButton = new Button("Approve");
+//            approveButton.addClickListener(e -> approveSubscription(e));
+            Column approveColumn = grid.addColumn(subscriptions -> "Approve",
+            new ButtonRenderer(clickEvent -> {
+                processSubscription(clickEvent,"Approve",grid,order);
+          }));
+            approveColumn.setCaption("Approve");
+            
+            Column rejectColumn = grid.addColumn(subscriptions -> "Reject",
+            new ButtonRenderer(clickEvent -> {
+                processSubscription(clickEvent,"Reject",grid,order);
+          }));
+            rejectColumn.setCaption("Reject");
 
+            
             mapLayout.addComponent(grid);
         }
-        
-
     }
+
+    private void processSubscription(ClickableRenderer.RendererClickEvent clickEvent, String action,Grid<Subscriptions> grid,Order order) 
+    {   System.out.println("###action="+action);
+        System.out.println("*******"+((Subscriptions)clickEvent.getItem()).getName());
+        Subscriptions s =((Subscriptions)clickEvent.getItem());
+        if(action.equalsIgnoreCase("Approve"))
+        {
+            s.setStatus(String.valueOf(SubscriptionStatus.APPROVED));
+        }
+        else if(action.equalsIgnoreCase("Reject"))
+        {
+            s.setStatus(String.valueOf(SubscriptionStatus.REJECTED));
+        }
+        subscriptionsService.saveSubscriptions(s);
+        
+        order = orderService.findOrder(order.getId());
+        //grid.getDataProvider().refreshAll();
+        grid.setItems(order.getSubscriptionsList());
+    }
+    
+    
     
     public enum SubscriptionStatus {
 		APPLIED,APPROVED,REJECTED,CANCELLED,EXPIRED
