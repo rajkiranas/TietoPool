@@ -50,8 +50,8 @@ public class MainView extends MainViewDesign implements ViewDisplay {
 		attachNavigation(storefront, StorefrontView.class);
 		attachNavigation(order, OrderEditView.class);
 		attachNavigation(users, UserAdminView.class);
-		attachNavigation(products, ProductAdminView.class);
-                attachNavigation(new Button("Dash"), MyDashboardView.class);
+		//attachNavigation(products, ProductAdminView.class);
+                //attachNavigation(new Button("Dash"), MyDashboardView.class);
 
 		logout.addClickListener(e -> logout());
 	}
