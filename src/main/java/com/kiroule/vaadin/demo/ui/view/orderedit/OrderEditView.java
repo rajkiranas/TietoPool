@@ -124,14 +124,16 @@ public class OrderEditView extends OrderEditViewDesign implements View {
 		String orderId = event.getParameters();
                 System.out.println("*****"+((com.kiroule.vaadin.demo.ui.navigation.NavigationManager)event.getSource()));
                 System.out.println("orderIdorderIdorderId="+orderId);
-		if (orderId.equalsIgnoreCase("mypool"))  {
-			presenter.enterView(null);                        
-		} else if("".equals(orderId))
+		if (orderId.equalsIgnoreCase("mypool"))  
                 {
                     User user = SecurityUtils.getCurrentUser(userService);
 			Order order = orderService.findByEmail(user.getEmail());
                         System.out.println("********="+order.getId());
                         presenter.enterView(order.getId());
+			                   
+		} else if("".equals(orderId))
+                {                    
+                        presenter.enterView(null);     
                 }
                 else {
 			presenter.enterView(Long.valueOf(orderId));

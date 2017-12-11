@@ -81,7 +81,9 @@ public class MainView extends MainViewDesign implements ViewDisplay {
                             System.out.println("targetView="+targetView);
                             navigationButton.addClickListener(e -> navigationManager.navigateTo(targetView,"mypool"));
                         }
+                        else{
 			navigationButton.addClickListener(e -> navigationManager.navigateTo(targetView));
+                        }
 		}
 	}
 

@@ -306,6 +306,7 @@ public class OrderEditPresenter implements Serializable, HasLogger {
     
      private void getRoutesInformation() {
         routes=routeService.getAllRoutes();
+         System.out.println("*****routes="+routes);
         List<String> stringRoutes = new ArrayList<String>();
          for (Route r : routes) {
              stringRoutes.add(r.getId()+":"+r.getSource()+"-to-"+r.getDestination());

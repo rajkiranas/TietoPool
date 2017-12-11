@@ -24,7 +24,8 @@ import com.kiroule.vaadin.demo.backend.data.entity.User;
 @Service
 public class RouteService {
 
-	private final RouteRepository routeRepository;
+    @Autowired
+	private RouteRepository routeRepository;
 
 //	private static Set<OrderState> notAvailableStates;
 //
@@ -35,10 +36,10 @@ public class RouteService {
 //		notAvailableStates.remove(OrderState.CANCELLED);
 //	}
 
-	@Autowired
-	public RouteService(RouteRepository routeRepository) {
-		this.routeRepository = routeRepository;
-	}
+	
+//	public RouteService(RouteRepository routeRepository) {
+//		this.routeRepository = routeRepository;
+//	}
 
 	public Route findRoute(Long id) {
 		return routeRepository.findOne(id);
